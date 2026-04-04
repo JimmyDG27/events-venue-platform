@@ -89,13 +89,14 @@ Phase 5: QA, Polish & Launch
   - `PATCH /requests/:id/status` — update status
   - **Summary:** Full CRUD for availability requests in `src/requests/`. `POST /requests` validates guests ≤ venue capacity (throws 400), throws 404 if venue not found, creates with `status: Active`. `GET /requests` filters by userId + optional status, paginated, includes venue relation. `GET /requests/:id` and `PATCH /requests/:id/status` enforce ownership via `findFirst({ where: { id, userId } })`. Auth is temporarily via `x-user-id` header (replaced by JwtAuthGuard in Phase 2). Fixed pre-existing lint issues: installed `@eslint/js` + `typescript-eslint`, added spec-file rule overrides for Jest mock `any` types, fixed `no-floating-promises` in `main.ts`. 36/36 tests, lint clean, TypeScript clean.
 
-- [ ] **1.4 — Favorites & Viewings API endpoints**
+- [✅] **1.4 — Favorites & Viewings API endpoints**
   - `POST /favorites/:venueId` — save venue to favorites
   - `DELETE /favorites/:venueId` — remove from favorites
   - `GET /favorites` — list user's favorite venues
   - `POST /viewings` — schedule a venue visit (venue_id, date/time)
   - `GET /viewings` — list upcoming and past viewings
   - `PATCH /viewings/:id` — update or cancel a viewing
+  - **Summary:** `FavoritesModule`: `POST /favorites/:venueId` verifies venue exists then creates (P2002→409 via PrismaExceptionFilter for duplicates), `DELETE /favorites/:venueId` uses Prisma composite unique key `userId_venueId`, `GET /favorites` returns all with venue included. `ViewingsModule`: `POST /viewings` validates scheduledAt is in the future, creates with `Scheduled` status; `GET /viewings` accepts `?filter=upcoming|past|all`; `PATCH /viewings/:id` enforces ownership, blocks updates on cancelled viewings. Both modules use `x-user-id` header stub (Phase 2 replaces with JWT). 49/49 tests, lint clean, TypeScript clean.
 
 - [ ] **1.5 — Email notification service**
   - Transactional email provider setup (Resend or SendGrid)

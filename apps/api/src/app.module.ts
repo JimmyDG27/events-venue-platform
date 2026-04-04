@@ -7,6 +7,8 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { VenuesModule } from './venues/venues.module';
 import { RequestsModule } from './requests/requests.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { ViewingsModule } from './viewings/viewings.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { RequestsModule } from './requests/requests.module';
     PrismaModule,
     VenuesModule,
     RequestsModule,
+    FavoritesModule,
+    ViewingsModule,
     ThrottlerModule.forRoot([
       {
         name: 'default',
