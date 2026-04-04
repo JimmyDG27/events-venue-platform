@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "venues": "Espaces",
+    "about": "À propos",
+    "contact": "Contact",
+    "login": "Se connecter",
+    "register": "Commencer"
+  },
+  "actions": {
+    "submit": "Envoyer",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "viewDetails": "Voir les détails",
+    "requestAvailability": "Demander la disponibilité",
+    "scheduleViewing": "Planifier une visite",
+    "addToFavorites": "Ajouter aux favoris",
+    "removeFromFavorites": "Retirer des favoris"
+  },
+  "status": {
+    "active": "Actif",
+    "completed": "Terminé",
+    "rejected": "Refusé",
+    "cancelled": "Annulé",
+    "scheduled": "Planifié"
+  },
+  "common": {
+    "loading": "Chargement…",
+    "error": "Une erreur s'est produite",
+    "noResults": "Aucun résultat",
+    "required": "Requis",
+    "optional": "Facultatif"
+  }
+}

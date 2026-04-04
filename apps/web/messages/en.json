@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "venues": "Venues",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Sign In",
+    "register": "Get Started"
+  },
+  "actions": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "viewDetails": "View Details",
+    "requestAvailability": "Request Availability",
+    "scheduleViewing": "Schedule a Viewing",
+    "addToFavorites": "Save to Favourites",
+    "removeFromFavorites": "Remove from Favourites"
+  },
+  "status": {
+    "active": "Active",
+    "completed": "Completed",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled",
+    "scheduled": "Scheduled"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "noResults": "No results found",
+    "required": "Required",
+    "optional": "Optional"
+  }
+}

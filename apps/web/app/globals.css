@@ -2,21 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Color tokens — populated in Phase 0.4 */
-  --color-background: #ffffff;
-  --color-foreground: #0a0a0a;
-  --color-accent: #000000;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --color-background: #0a0a0a;
-    --color-foreground: #ededed;
+    /* Color tokens — raw RGB channels for Tailwind opacity modifier support */
+    --color-bg: 247 245 240;           /* #F7F5F0 — warm parchment */
+    --color-fg: 28 25 22;              /* #1C1916 — warm near-black */
+    --color-muted: 138 130 120;        /* #8A8278 — warm taupe */
+    --color-surface: 237 234 228;      /* #EDEAE4 — card / input bg */
+    --color-border: 216 212 204;       /* #D8D4CC — subtle warm border */
+    --color-accent: 44 74 62;          /* #2C4A3E — deep forest green */
+    --color-accent-fg: 247 245 240;    /* #F7F5F0 — text on accent bg */
+    --color-accent-hover: 31 53 48;    /* #1F3530 — accent hover */
   }
-}
 
-body {
-  background: var(--color-background);
-  color: var(--color-foreground);
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-fg));
+  }
+
+  ::selection {
+    background-color: rgb(var(--color-accent));
+    color: rgb(var(--color-accent-fg));
+  }
 }

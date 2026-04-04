@@ -47,30 +47,32 @@ Phase 5: QA, Polish & Launch
   - Migrations setup (Prisma or Drizzle ORM)
   - **Summary:** Full Prisma schema written in `apps/api/prisma/schema.prisma` with all 5 tables, two enums (`RequestStatus`, `ViewingStatus`), FK relations with CASCADE delete, and a unique constraint on `favorites(user_id, venue_id)`. Baseline migration SQL generated via `prisma migrate diff` and saved to `prisma/migrations/0001_init/`. Global `PrismaModule`/`PrismaService` added to NestJS. Decisions: ORM = Prisma (already in stack); `notification_preferences` and `pricing` stored as JSONB for flexibility; `styles` and `photos` as `TEXT[]` arrays (PostgreSQL-native); `passwordHash` column added to `users` for Phase 2 auth.
 
-- [ ] **0.3 — Set up cloud infrastructure**
+- [✅] **0.3 — Set up cloud infrastructure**
   - Provision PostgreSQL database (e.g. Supabase / Railway)
   - Cloud storage bucket for venue images (e.g. AWS S3 / Cloudflare R2)
   - Environment variables management (.env structure)
   - Staging environment provisioning
   - Hosting setup (scalable cloud infrastructure)
 
-- [ ] **0.4 — Design system & component library**
+- [✅] **0.4 — Design system & component library**
   - Color tokens, typography scale
   - Base reusable components: Button, Input, Card, Modal, Badge
   - Responsive grid/layout system (desktop & mobile)
   - i18n framework setup (English + one additional language)
+  - **Summary:** Warm editorial palette (#F7F5F0 parchment bg, #2C4A3E forest green accent) defined as raw RGB CSS variables for Tailwind opacity support. Fonts: Cormorant Garamond (display) + Jost (body) via next/font/google with CSS variable injection. Tailwind config extended with semantic color and font tokens. Five components in `components/ui/`: Button (primary/secondary/ghost × sm/md/lg), Input (label, error, helper text, aria-described), Card (image slot, hover lift), Modal (portal, ESC key, focus trap, backdrop), Badge (active/completed/rejected/cancelled/scheduled). next-intl v3 configured with `[locale]` App Router routing, middleware for locale detection, English + French message files. Root layout passes through children; locale layout applies fonts + NextIntlClientProvider. 25/25 tests passing (Button, Input, Badge). TypeScript clean.
 
 ---
 
 ## Phase 1 — Backend: Core API
 > Depends on: Phase 0
 
-- [ ] **1.1 — REST API structure & middleware**
+- [✅] **1.1 — REST API structure & middleware**
   - Node.js API setup and routing
   - Request validation middleware (Zod)
   - Error handling middleware (global error handler)
   - Rate limiting setup
   - Logging setup
+  - **Summary:** `src/common/` layer added: `ZodValidationPipe` (schema-based validation, field-level error messages), `HttpExceptionFilter` (consistent JSON error envelope with statusCode/error/message/timestamp/path), `PrismaExceptionFilter` (maps P2002→409, P2025→404, P2003→400, P2014→400), `LoggingInterceptor` (method + URL + ms per request). `main.ts` updated: helmet security headers, global filters (Prisma → HTTP, most-specific-first), logging interceptor, PORT defaults to 3001. `app.module.ts`: ThrottlerModule (100 req / 60s window) + global ThrottlerGuard via APP_GUARD token; auth endpoints can override with `@Throttle()`. Removed class-validator ValidationPipe — validation now done per-endpoint with Zod schemas. 10/10 tests passing, TypeScript clean.
 
 - [ ] **1.2 — Venues API endpoints**
   - `GET /venues` — list with filters (budget, capacity, style/theme, location, event type) and sorting options
@@ -296,7 +298,7 @@ Phase 5: QA, Polish & Launch
 | Phase | Status | Notes |
 |---|---|---|
 | Phase 0 — Setup | 🟡 In Progress | |
-| Phase 1 — Backend API | 🔲 Not started | |
+| Phase 1 — Backend API | 🟡 In Progress | |
 | Phase 2 — Auth | 🔲 Not started | |
 | Phase 3 — Public Frontend | 🔲 Not started | |
 | Phase 4 — User Dashboard | 🔲 Not started | |
