@@ -29,12 +29,13 @@ Phase 5: QA, Polish & Launch
 ## Phase 0 — Project Setup & Architecture
 > No dependencies. Start here.
 
-- [ ] **0.1 — Initialize monorepo & tooling**
+- [✅] **0.1 — Initialize monorepo & tooling**
   - Next.js project scaffold (App Router)
   - Tailwind CSS configuration
   - ESLint + Prettier setup
   - Git repository initialization
   - CI/CD pipeline skeleton (GitHub Actions)
+  - **Summary:** Initialized pnpm monorepo with workspaces (`apps/web`, `apps/api`, `packages/shared`). Manually scaffolded Next.js 15 (App Router, TypeScript, Tailwind, Vitest) and NestJS 10 (TypeScript, Swagger, global ValidationPipe). Root Prettier config shared across apps. GitHub Actions CI runs lint + type-check + tests for both apps on push. `pnpm.onlyBuiltDependencies` configured for Prisma and NestJS native builds. Decision: pnpm chosen as package manager for monorepo workspace support and disk efficiency.
 
 - [ ] **0.2 — Define database schema**
   - PostgreSQL schema design:
@@ -293,7 +294,7 @@ Phase 5: QA, Polish & Launch
 
 | Phase | Status | Notes |
 |---|---|---|
-| Phase 0 — Setup | 🔲 Not started | |
+| Phase 0 — Setup | 🟡 In Progress | |
 | Phase 1 — Backend API | 🔲 Not started | |
 | Phase 2 — Auth | 🔲 Not started | |
 | Phase 3 — Public Frontend | 🔲 Not started | |

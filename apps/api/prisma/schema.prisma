@@ -1,0 +1,11 @@
+// This schema is defined in Phase 0.1 as a placeholder.
+// Full schema is populated in Phase 0.2.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
