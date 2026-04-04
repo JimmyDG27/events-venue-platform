@@ -74,11 +74,12 @@ Phase 5: QA, Polish & Launch
   - Logging setup
   - **Summary:** `src/common/` layer added: `ZodValidationPipe` (schema-based validation, field-level error messages), `HttpExceptionFilter` (consistent JSON error envelope with statusCode/error/message/timestamp/path), `PrismaExceptionFilter` (maps P2002→409, P2025→404, P2003→400, P2014→400), `LoggingInterceptor` (method + URL + ms per request). `main.ts` updated: helmet security headers, global filters (Prisma → HTTP, most-specific-first), logging interceptor, PORT defaults to 3001. `app.module.ts`: ThrottlerModule (100 req / 60s window) + global ThrottlerGuard via APP_GUARD token; auth endpoints can override with `@Throttle()`. Removed class-validator ValidationPipe — validation now done per-endpoint with Zod schemas. 10/10 tests passing, TypeScript clean.
 
-- [ ] **1.2 — Venues API endpoints**
+- [✅] **1.2 — Venues API endpoints**
   - `GET /venues` — list with filters (budget, capacity, style/theme, location, event type) and sorting options
   - `GET /venues/:id` — venue detail (photos, capacity, styles, pricing, location)
   - Image upload endpoint (cloud storage integration)
   - Seed realistic venue data for development and testing
+  - **Summary:** `GET /venues` with 7 query params (capacity, style, location, eventType, budgetMin, budgetMax, sort, page, limit) — DB-level filters for capacity/style/location, in-memory budget filtering (JSONB limitation), in-memory price sort with manual pagination. `GET /venues/:id` with UUID validation and 404. `POST /venues/:id/photos` multipart upload to Cloudflare R2 via `@aws-sdk/client-s3`; validates MIME type (jpeg/png/webp) and 10 MB limit. `StorageModule/StorageService` wraps S3Client. Seed: 12 realistic London venues. Jest `moduleNameMapper` added for `@/` path aliases. 21/21 tests passing, TypeScript clean.
 
 - [ ] **1.3 — Availability Request API endpoints**
   - `POST /requests` — create request (date/date range, guest count, event type, optional message)
@@ -297,7 +298,7 @@ Phase 5: QA, Polish & Launch
 
 | Phase | Status | Notes |
 |---|---|---|
-| Phase 0 — Setup | 🟡 In Progress | |
+| Phase 0 — Setup | ✅ Done | 0.1–0.4 complete |
 | Phase 1 — Backend API | 🟡 In Progress | |
 | Phase 2 — Auth | 🔲 Not started | |
 | Phase 3 — Public Frontend | 🔲 Not started | |
