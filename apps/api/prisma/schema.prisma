@@ -1,6 +1,3 @@
-// This schema is defined in Phase 0.1 as a placeholder.
-// Full schema is populated in Phase 0.2.
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,117 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum RequestStatus {
+  Active
+  Completed
+  Rejected
+  Cancelled
+}
+
+enum ViewingStatus {
+  Scheduled
+  Completed
+  Cancelled
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+/// Platform user (event organiser). Auth credentials live here.
+model User {
+  id           String  @id @default(uuid())
+  name         String
+  email        String  @unique
+  passwordHash String  @map("password_hash")
+  phone        String?
+
+  /// { bookingUpdates: boolean, viewingReminders: boolean, marketingEmails: boolean }
+  notificationPreferences Json @default("{\"bookingUpdates\":true,\"viewingReminders\":true,\"marketingEmails\":false}") @map("notification_preferences")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  requests  AvailabilityRequest[]
+  viewings  Viewing[]
+  favorites Favorite[]
+
+  @@map("users")
+}
+
+/// Event venue listing.
+model Venue {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  /// Human-readable address or area, e.g. "Shoreditch, London"
+  location    String
+  capacity    Int
+  /// Array of style/theme tags, e.g. ["industrial", "rooftop"]
+  styles      String[]
+  /// { currency: string, pricePerHour?: number, pricePerDay?: number, minimumHours?: number }
+  pricing     Json
+  /// Ordered array of public image URLs (Cloudflare R2)
+  photos      String[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  requests  AvailabilityRequest[]
+  viewings  Viewing[]
+  favorites Favorite[]
+
+  @@map("venues")
+}
+
+/// Availability request submitted by a user for a venue.
+model AvailabilityRequest {
+  id        String        @id @default(uuid())
+  userId    String        @map("user_id")
+  venueId   String        @map("venue_id")
+  dateFrom  DateTime      @map("date_from")
+  dateTo    DateTime      @map("date_to")
+  /// Number of expected guests — must not exceed venue capacity
+  guests    Int
+  eventType String        @map("event_type")
+  message   String?
+  status    RequestStatus @default(Active)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  venue Venue @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("availability_requests")
+}
+
+/// A scheduled venue visit / viewing.
+model Viewing {
+  id          String        @id @default(uuid())
+  userId      String        @map("user_id")
+  venueId     String        @map("venue_id")
+  scheduledAt DateTime      @map("scheduled_at")
+  status      ViewingStatus @default(Scheduled)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  venue Venue @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@map("viewings")
+}
+
+/// Saved / favourited venues per user.
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  venueId   String   @map("venue_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  venue Venue @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  /// A user can only favourite a venue once
+  @@unique([userId, venueId])
+  @@map("favorites")
 }

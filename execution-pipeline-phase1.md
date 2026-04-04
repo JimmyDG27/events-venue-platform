@@ -37,7 +37,7 @@ Phase 5: QA, Polish & Launch
   - CI/CD pipeline skeleton (GitHub Actions)
   - **Summary:** Initialized pnpm monorepo with workspaces (`apps/web`, `apps/api`, `packages/shared`). Manually scaffolded Next.js 15 (App Router, TypeScript, Tailwind, Vitest) and NestJS 10 (TypeScript, Swagger, global ValidationPipe). Root Prettier config shared across apps. GitHub Actions CI runs lint + type-check + tests for both apps on push. `pnpm.onlyBuiltDependencies` configured for Prisma and NestJS native builds. Decision: pnpm chosen as package manager for monorepo workspace support and disk efficiency.
 
-- [ ] **0.2 — Define database schema**
+- [✅] **0.2 — Define database schema**
   - PostgreSQL schema design:
     - `users` (id, name, email, phone, notification_preferences, created_at)
     - `venues` (id, name, description, location, capacity, styles, pricing, photos, created_at)
@@ -45,6 +45,7 @@ Phase 5: QA, Polish & Launch
     - `viewings` (id, user_id, venue_id, scheduled_at, status, created_at)
     - `favorites` (id, user_id, venue_id, created_at)
   - Migrations setup (Prisma or Drizzle ORM)
+  - **Summary:** Full Prisma schema written in `apps/api/prisma/schema.prisma` with all 5 tables, two enums (`RequestStatus`, `ViewingStatus`), FK relations with CASCADE delete, and a unique constraint on `favorites(user_id, venue_id)`. Baseline migration SQL generated via `prisma migrate diff` and saved to `prisma/migrations/0001_init/`. Global `PrismaModule`/`PrismaService` added to NestJS. Decisions: ORM = Prisma (already in stack); `notification_preferences` and `pricing` stored as JSONB for flexibility; `styles` and `photos` as `TEXT[]` arrays (PostgreSQL-native); `passwordHash` column added to `users` for Phase 2 auth.
 
 - [ ] **0.3 — Set up cloud infrastructure**
   - Provision PostgreSQL database (e.g. Supabase / Railway)
