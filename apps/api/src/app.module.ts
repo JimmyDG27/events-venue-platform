@@ -6,12 +6,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { VenuesModule } from './venues/venues.module';
+import { RequestsModule } from './requests/requests.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     VenuesModule,
+    RequestsModule,
     ThrottlerModule.forRoot([
       {
         name: 'default',

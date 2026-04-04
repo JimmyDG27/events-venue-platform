@@ -81,12 +81,13 @@ Phase 5: QA, Polish & Launch
   - Seed realistic venue data for development and testing
   - **Summary:** `GET /venues` with 7 query params (capacity, style, location, eventType, budgetMin, budgetMax, sort, page, limit) — DB-level filters for capacity/style/location, in-memory budget filtering (JSONB limitation), in-memory price sort with manual pagination. `GET /venues/:id` with UUID validation and 404. `POST /venues/:id/photos` multipart upload to Cloudflare R2 via `@aws-sdk/client-s3`; validates MIME type (jpeg/png/webp) and 10 MB limit. `StorageModule/StorageService` wraps S3Client. Seed: 12 realistic London venues. Jest `moduleNameMapper` added for `@/` path aliases. 21/21 tests passing, TypeScript clean.
 
-- [ ] **1.3 — Availability Request API endpoints**
+- [✅] **1.3 — Availability Request API endpoints**
   - `POST /requests` — create request (date/date range, guest count, event type, optional message)
   - Guest count vs venue capacity validation logic
   - `GET /requests` — user's own requests, with status filter (Active, Completed, Rejected, Cancelled)
   - `GET /requests/:id` — request detail
   - `PATCH /requests/:id/status` — update status
+  - **Summary:** Full CRUD for availability requests in `src/requests/`. `POST /requests` validates guests ≤ venue capacity (throws 400), throws 404 if venue not found, creates with `status: Active`. `GET /requests` filters by userId + optional status, paginated, includes venue relation. `GET /requests/:id` and `PATCH /requests/:id/status` enforce ownership via `findFirst({ where: { id, userId } })`. Auth is temporarily via `x-user-id` header (replaced by JwtAuthGuard in Phase 2). Fixed pre-existing lint issues: installed `@eslint/js` + `typescript-eslint`, added spec-file rule overrides for Jest mock `any` types, fixed `no-floating-promises` in `main.ts`. 36/36 tests, lint clean, TypeScript clean.
 
 - [ ] **1.4 — Favorites & Viewings API endpoints**
   - `POST /favorites/:venueId` — save venue to favorites
