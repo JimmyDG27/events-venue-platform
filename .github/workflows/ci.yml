@@ -6,6 +6,29 @@ on:
   pull_request:
     branches: [main]
 
+# Mock values for CI — no real database or external services are used in tests.
+# All unit/component tests run fully in-process (jest/vitest + jsdom).
+env:
+  # Prisma — fake URL satisfies format validation without a real DB connection
+  DATABASE_URL: "postgresql://ci:ci@localhost:5432/ci?pgbouncer=true"
+  DIRECT_URL: "postgresql://ci:ci@localhost:5432/ci"
+  # JWT
+  JWT_SECRET: "ci-test-secret-minimum-32-chars-long-abc"
+  JWT_EXPIRES_IN: "7d"
+  # App
+  PORT: "3001"
+  NODE_ENV: "test"
+  # Resend (not exercised in tests)
+  RESEND_API_KEY: "re_ci_placeholder"
+  RESEND_FROM_EMAIL: "ci@example.com"
+  # Cloudflare R2 (not exercised in tests)
+  R2_ACCOUNT_ID: "ci-placeholder"
+  R2_ACCESS_KEY_ID: "ci-placeholder"
+  R2_SECRET_ACCESS_KEY: "ci-placeholder"
+  R2_BUCKET_NAME: "ci-venue-images"
+  R2_ENDPOINT: "https://ci-placeholder.r2.cloudflarestorage.com/ci-venue-images"
+  R2_PUBLIC_URL: "https://ci-placeholder.r2.dev"
+
 jobs:
   lint-and-test-web:
     name: Web — Lint & Test
@@ -37,7 +60,11 @@ jobs:
         run: pnpm tsc --noEmit
 
       - name: Test
-        run: pnpm test
+        run: pnpm test -- --run
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: "https://ci-placeholder.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "ci-anon-key-placeholder"
+          NEXT_PUBLIC_API_URL: "http://localhost:3001"
 
   lint-and-test-api:
     name: API — Lint & Test
@@ -98,3 +125,6 @@ jobs:
         run: pnpm build:web
         env:
           NEXT_TELEMETRY_DISABLED: 1
+          NEXT_PUBLIC_SUPABASE_URL: "https://ci-placeholder.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "ci-anon-key-placeholder"
+          NEXT_PUBLIC_API_URL: "http://localhost:3001"
