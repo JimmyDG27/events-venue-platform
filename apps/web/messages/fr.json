@@ -51,6 +51,33 @@
     "noFeaturedVenues": "Aucune salle disponible pour le moment.",
     "requestAvailability": "Vérifier la disponibilité"
   },
+  "about": {
+    "title": "À propos",
+    "subtitle": "Connecter les organisateurs d'événements avec des lieux d'exception à Londres.",
+    "missionTitle": "Notre mission",
+    "missionBody": "Nous croyons que chaque événement mérite l'espace idéal. Notre plateforme facilite la découverte, la comparaison et la réservation de lieux uniques — des petits clubs aux grandes salles de bal — pour que vous puissiez vous concentrer sur la création d'expériences inoubliables.",
+    "howTitle": "Comment ça marche",
+    "step1": "Rechercher & Filtrer",
+    "step1Body": "Parcourez notre collection sélectionnée avec des filtres de lieu, capacité, style et budget.",
+    "step2": "Demander la disponibilité",
+    "step2Body": "Soumettez une demande directement à la salle. Fournissez vos dates, nombre d'invités et détails.",
+    "step3": "Confirmer & Planifier",
+    "step3Body": "Recevez une réponse de la salle et coordonnez les derniers détails de votre événement.",
+    "ctaTitle": "Prêt à trouver votre salle ?",
+    "cta": "Voir les salles"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Une question ou besoin d'aide ? Nous sommes là pour vous.",
+    "nameLabel": "Votre nom",
+    "emailLabel": "Adresse e-mail",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Comment pouvons-nous vous aider ?",
+    "submit": "Envoyer le message",
+    "successTitle": "Message envoyé !",
+    "successBody": "Merci de nous avoir contacté. Nous vous répondrons dans un délai d'un jour ouvrable.",
+    "emailUs": "Ou envoyez-nous un e-mail directement à"
+  },
   "requestFlow": {
     "pageTitle": "Demander la disponibilité",
     "forVenue": "pour {venueName}",

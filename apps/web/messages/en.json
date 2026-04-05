@@ -51,6 +51,33 @@
     "noFeaturedVenues": "No venues available at the moment.",
     "requestAvailability": "Check Availability"
   },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Connecting event organisers with exceptional venues across London.",
+    "missionTitle": "Our Mission",
+    "missionBody": "We believe every event deserves the perfect space. Our platform makes it easy to discover, compare, and book unique venues — from intimate supper clubs to grand ballrooms — so you can focus on creating unforgettable experiences.",
+    "howTitle": "How It Works",
+    "step1": "Search & Filter",
+    "step1Body": "Browse our curated collection using filters for location, capacity, style, and budget.",
+    "step2": "Request Availability",
+    "step2Body": "Submit an availability request directly to the venue. Provide your dates, guest count, and event details.",
+    "step3": "Confirm & Plan",
+    "step3Body": "Receive a response from the venue and coordinate the final details for your event.",
+    "ctaTitle": "Ready to Find Your Venue?",
+    "cta": "Browse Venues"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Have a question or need help? We're here for you.",
+    "nameLabel": "Your name",
+    "emailLabel": "Email address",
+    "messageLabel": "Message",
+    "messagePlaceholder": "How can we help?",
+    "submit": "Send Message",
+    "successTitle": "Message sent!",
+    "successBody": "Thanks for reaching out. We'll get back to you within one business day.",
+    "emailUs": "Or email us directly at"
+  },
   "requestFlow": {
     "pageTitle": "Request Availability",
     "forVenue": "for {venueName}",

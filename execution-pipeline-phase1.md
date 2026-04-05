@@ -193,11 +193,12 @@ Phase 5: QA, Polish & Launch
   - Email notification triggered on submit
   - **Summary:** `app/[locale]/venues/[id]/request/page.tsx` — server component fetches venue (404 on failure), renders `RequestForm`. `components/request-flow/RequestForm.tsx` — 3-step client form with visual step indicator: Step 1 (dateFrom/dateTo with date inputs + validation), Step 2 (guests with capacity max hint + inline error), Step 3 (eventType required + optional message textarea). Redirects to `/auth/login?return=...` if no token. On submit calls `POST /requests` with Bearer JWT. Confirmation screen with checkmark on success. Back navigation between steps. `requestFlow.*` i18n namespace in en/fr. 25/25 tests, lint clean, TypeScript clean.
 
-- [ ] **3.5 — About, Contact & static pages**
+- [✅] **3.5 — About, Contact & static pages**
   - About page (static content)
   - Contact page (basic contact form or info)
   - Multi-language support: English + one additional language (i18n strings wired up)
   - SEO: meta tags, Open Graph tags, page titles
+  - **Summary:** `app/[locale]/about/page.tsx` — static editorial page: hero, mission section, 3-step "how it works" grid, green CTA banner. `app/[locale]/contact/page.tsx` — client form (name, email, message) with success state (static — no backend needed in Phase 3). Root `layout.tsx` extended with full OpenGraph and Twitter meta + `title.template` for per-page titles. `about/page.tsx` exports `generateMetadata`. `about.*` and `contact.*` i18n namespaces added to en/fr. 25/25 tests, lint clean, TypeScript clean.
 
 - [ ] **3.6 — Frontend component tests (public website)**
   - Component tests for search bar, filter panel, venue card

@@ -24,8 +24,22 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: 'Venue Booking Platform',
-  description: 'Discover and book unique event venues',
+  title: {
+    default: 'Venue Booking Platform',
+    template: '%s | Venue Booking Platform',
+  },
+  description: 'Discover and book unique event venues across London for weddings, corporate events, and more.',
+  openGraph: {
+    type: 'website',
+    siteName: 'Venue Booking Platform',
+    title: 'Venue Booking Platform',
+    description: 'Discover and book unique event venues across London.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Venue Booking Platform',
+    description: 'Discover and book unique event venues across London.',
+  },
 };
 
 type Props = {
