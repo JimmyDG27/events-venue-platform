@@ -136,13 +136,14 @@ Phase 5: QA, Polish & Launch
   - Logout endpoint (`POST /auth/logout`)
   - **Summary:** `JwtStrategy` (Passport) validates Bearer tokens, fetches the user from DB, and returns `AuthenticatedUser` on `request.user`. `JwtAuthGuard` extends `AuthGuard('jwt')`. `@CurrentUser()` param decorator extracts `AuthenticatedUser` from the request. `POST /auth/logout` added (stateless JWT — returns success, client discards token). All three protected controllers (`RequestsController`, `FavoritesController`, `ViewingsController`) rewritten: removed `x-user-id` header pattern, added `@UseGuards(JwtAuthGuard)` + `@ApiBearerAuth()` at class level, all endpoints use `@CurrentUser()`. Controller unit specs updated to use `.overrideGuard(JwtAuthGuard)` pattern. E2e specs updated: `x-user-id`-based 401 tests removed (guard mock always injects the user for business-logic tests; real auth is covered by JWT strategy unit tests). 70/70 unit tests + 39/39 e2e tests, lint clean, TypeScript clean.
 
-- [ ] **2.3 — Profile settings API**
+- [✅] **2.3 — Profile settings API**
   - `GET /users/me` — get current user profile
   - `PATCH /users/me` — update name, email, phone number
   - `PATCH /users/me/notifications` — update notification preferences:
     - Booking/request updates
     - Viewing reminders
     - Marketing emails
+  - **Summary:** `UsersModule` with `UsersService` and `UsersController`. `GET /users/me` returns profile without sensitive fields (no `passwordHash`, no `emailVerificationToken`). `PATCH /users/me` validates with Zod, requires at least one field, checks email uniqueness (409 if taken by another user). `PATCH /users/me/notifications` merges partial preferences with existing JSONB defaults (`bookingUpdates`, `viewingReminders`, `marketingEmails`). All routes protected by `JwtAuthGuard`. `UsersModule` added to `AppModule`. 80/80 unit tests + 47/47 e2e tests, lint clean, TypeScript clean.
 
 - [ ] **2.4 — Auth unit & integration tests**
   - Register / login / logout flow tests

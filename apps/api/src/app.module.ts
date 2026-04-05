@@ -12,6 +12,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { ViewingsModule } from './viewings/viewings.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     ViewingsModule,
     NotificationsModule,
     AuthModule,
+    UsersModule,
     ThrottlerModule.forRoot([
       {
         name: 'default',
