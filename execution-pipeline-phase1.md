@@ -156,11 +156,12 @@ Phase 5: QA, Polish & Launch
 ## Phase 3 — Frontend: Public Website
 > Depends on: Phase 0.4, Phase 1.2, Phase 2.1
 
-- [ ] **3.1 — Homepage**
+- [✅] **3.1 — Homepage**
   - Search bar: event type, location, date (or date range), number of guests
   - Recommended/featured venues section
   - Responsive layout (desktop & mobile)
   - Connected to `GET /venues` API with search params
+  - **Summary:** `lib/types.ts` defines `Venue`, `VenuesResponse`, `VenueFilters` types. `lib/api.ts` typed API client with `getVenues(filters)` and `getVenue(id)` (reads `NEXT_PUBLIC_API_URL`). `i18n/navigation.ts` exposes `createNavigation` utilities for typed locale-aware routing. `Navbar` (client) and `Footer` (server) layout components in `components/layout/`. Homepage in `app/[locale]/page.tsx`: full-height hero with radial gradient accent, display headline, `SearchBar` client component (event type + location + guests → navigates to `/venues?...`), `FeaturedVenues` async server component (fetches `GET /venues?limit=6`, gracefully empty on API unavailability, Suspense skeleton). Locale layout updated to mount `<Navbar>` + `<Footer>` around page content. i18n messages extended with `home.*` and `footer.*` keys in both `en.json` and `fr.json`. Pre-existing `Modal.tsx` react-hooks/set-state-in-effect lint issue fixed with targeted disable comment. Fixed `eslint-plugin-react-hooks` missing dep. 25/25 tests, lint clean, TypeScript clean.
 
 - [ ] **3.2 — Venues listing page**
   - Filter sidebar/panel: budget, capacity, style/theme, event type, location

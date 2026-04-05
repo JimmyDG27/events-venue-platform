@@ -1,6 +1,6 @@
 {
   "nav": {
-    "venues": "Espaces",
+    "venues": "Salles",
     "about": "À propos",
     "contact": "Contact",
     "login": "Se connecter",
@@ -9,7 +9,7 @@
   "actions": {
     "submit": "Envoyer",
     "cancel": "Annuler",
-    "save": "Sauvegarder",
+    "save": "Enregistrer",
     "delete": "Supprimer",
     "edit": "Modifier",
     "close": "Fermer",
@@ -17,20 +17,46 @@
     "requestAvailability": "Demander la disponibilité",
     "scheduleViewing": "Planifier une visite",
     "addToFavorites": "Ajouter aux favoris",
-    "removeFromFavorites": "Retirer des favoris"
+    "removeFromFavorites": "Retirer des favoris",
+    "search": "Rechercher des salles"
   },
   "status": {
     "active": "Actif",
     "completed": "Terminé",
-    "rejected": "Refusé",
+    "rejected": "Rejeté",
     "cancelled": "Annulé",
     "scheduled": "Planifié"
   },
   "common": {
     "loading": "Chargement…",
     "error": "Une erreur s'est produite",
-    "noResults": "Aucun résultat",
-    "required": "Requis",
-    "optional": "Facultatif"
+    "noResults": "Aucun résultat trouvé",
+    "required": "Obligatoire",
+    "optional": "Optionnel",
+    "guests": "invités",
+    "capacity": "Capacité"
+  },
+  "home": {
+    "heroTitle": "Trouvez la Salle Idéale pour Votre Événement",
+    "heroSubtitle": "Découvrez des espaces sélectionnés à Londres — des réunions intimes aux grandes célébrations.",
+    "searchEventType": "Type d'événement",
+    "searchEventTypePlaceholder": "Mariage, Entreprise, Anniversaire…",
+    "searchLocation": "Lieu",
+    "searchLocationPlaceholder": "Shoreditch, Mayfair…",
+    "searchGuests": "Invités",
+    "searchGuestsPlaceholder": "Combien d'invités ?",
+    "featuredTitle": "Salles en vedette",
+    "featuredSubtitle": "Des espaces sélectionnés pour chaque occasion",
+    "viewAllVenues": "Voir toutes les salles",
+    "noFeaturedVenues": "Aucune salle disponible pour le moment.",
+    "requestAvailability": "Vérifier la disponibilité"
+  },
+  "footer": {
+    "tagline": "Connecter les organisateurs d'événements avec des lieux d'exception.",
+    "links": "Liens rapides",
+    "legal": "Mentions légales",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "copyright": "© {year} Venue Booking Platform. Tous droits réservés."
   }
 }

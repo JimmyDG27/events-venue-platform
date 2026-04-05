@@ -17,6 +17,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-only, required for createPortal SSR guard
     setMounted(true);
   }, []);
 

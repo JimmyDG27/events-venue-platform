@@ -17,7 +17,8 @@
     "requestAvailability": "Request Availability",
     "scheduleViewing": "Schedule a Viewing",
     "addToFavorites": "Save to Favourites",
-    "removeFromFavorites": "Remove from Favourites"
+    "removeFromFavorites": "Remove from Favourites",
+    "search": "Search Venues"
   },
   "status": {
     "active": "Active",
@@ -31,6 +32,31 @@
     "error": "Something went wrong",
     "noResults": "No results found",
     "required": "Required",
-    "optional": "Optional"
+    "optional": "Optional",
+    "guests": "guests",
+    "capacity": "Capacity"
+  },
+  "home": {
+    "heroTitle": "Find the Perfect Venue for Your Event",
+    "heroSubtitle": "Browse curated spaces across London — from intimate gatherings to grand celebrations.",
+    "searchEventType": "Event type",
+    "searchEventTypePlaceholder": "Wedding, Corporate, Birthday…",
+    "searchLocation": "Location",
+    "searchLocationPlaceholder": "Shoreditch, Mayfair…",
+    "searchGuests": "Guests",
+    "searchGuestsPlaceholder": "How many guests?",
+    "featuredTitle": "Featured Venues",
+    "featuredSubtitle": "Hand-picked spaces for every occasion",
+    "viewAllVenues": "Browse All Venues",
+    "noFeaturedVenues": "No venues available at the moment.",
+    "requestAvailability": "Check Availability"
+  },
+  "footer": {
+    "tagline": "Connecting event organisers with exceptional venues.",
+    "links": "Quick Links",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© {year} Venue Booking Platform. All rights reserved."
   }
 }
