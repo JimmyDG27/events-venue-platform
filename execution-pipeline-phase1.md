@@ -109,11 +109,12 @@ Phase 5: QA, Polish & Launch
   - Marketing email opt-in/opt-out support (notification preferences)
   - **Summary:** `NotificationsModule` with `NotificationsService` wrapping the Resend SDK. Async event-based dispatch via `@nestjs/event-emitter`: `RequestsService` and `ViewingsService` emit `request.created`, `request.status_updated`, and `viewing.created` events after their respective DB writes; `NotificationsService` handles each with `@OnEvent()`. Email failures are caught and logged — never thrown — so the API response is never blocked. User `notification_preferences` (JSONB) checked before each send: `bookingUpdates` gates request emails, `viewingReminders` gates viewing emails. HTML templates in `email-templates.ts`. 56/56 tests, lint clean, TypeScript clean.
 
-- [ ] **1.6 — Backend unit & integration tests**
+- [✅] **1.6 — Backend unit & integration tests**
   - Unit tests for business logic (capacity validation, status transitions)
   - Integration tests for all API endpoints (happy path + edge cases)
   - Test database setup (separate test DB or in-memory)
   - Test runner: Jest or Vitest
+  - **Summary:** Added `FavoritesController`, `ViewingsController` unit tests (controller-layer: delegation + UnauthorizedException on missing header). Added 4 integration e2e test suites (`venues`, `requests`, `favorites`, `viewings`) using supertest + mocked Prisma — 47 e2e tests covering happy paths, 400/401/404 error cases, business-rule validation (capacity, past dates, duplicate favorites P2002, cancelled viewing block). ESLint config extended: e2e files get the same unsafe-any/unused-vars overrides as spec files. 68/68 unit tests + 47/47 e2e tests, lint clean, TypeScript clean.
 
 ---
 
