@@ -181,7 +181,7 @@ Phase 5: QA, Polish & Launch
   - Mobile-first, fully responsive
   - **Summary:** `app/[locale]/venues/[id]/page.tsx` — async server component fetches `GET /venues/:id`, calls `notFound()` on 404. `PhotoGallery` client component with prev/next arrows, dot indicators, and photo counter. Two-column layout (description + key facts + styles + pricing table | sticky CTA sidebar). `VenueActions` client component wraps `FavoriteButton` and `ScheduleViewingModal` with modal open/close state. `FavoriteButton` reads `localStorage.access_token` — redirects to `/auth/login?return=...` if unauthenticated, calls `POST/DELETE /favorites/:venueId` if authenticated. `ScheduleViewingModal` (datetime-local picker) same auth pattern, calls `POST /viewings`. i18n `venueDetail.*` namespace added. 25/25 tests, lint clean, TypeScript clean.
 
-- [ ] **3.4 — Availability request flow (UI)**
+- [✅] **3.4 — Availability request flow (UI)**
   - Multi-step form:
     1. Date selection (exact date or date range picker)
     2. Number of guests input (with capacity validation feedback)
@@ -191,6 +191,7 @@ Phase 5: QA, Polish & Launch
   - Submission confirmation screen
   - Connected to `POST /requests` API
   - Email notification triggered on submit
+  - **Summary:** `app/[locale]/venues/[id]/request/page.tsx` — server component fetches venue (404 on failure), renders `RequestForm`. `components/request-flow/RequestForm.tsx` — 3-step client form with visual step indicator: Step 1 (dateFrom/dateTo with date inputs + validation), Step 2 (guests with capacity max hint + inline error), Step 3 (eventType required + optional message textarea). Redirects to `/auth/login?return=...` if no token. On submit calls `POST /requests` with Bearer JWT. Confirmation screen with checkmark on success. Back navigation between steps. `requestFlow.*` i18n namespace in en/fr. 25/25 tests, lint clean, TypeScript clean.
 
 - [ ] **3.5 — About, Contact & static pages**
   - About page (static content)
