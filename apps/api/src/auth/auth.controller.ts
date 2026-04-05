@@ -1,5 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from './jwt-auth.guard';
 import { ZodValidationPipe } from '@/common';
 import { AuthService } from './auth.service';
 import {
@@ -39,5 +40,14 @@ export class AuthController {
     @Query(new ZodValidationPipe(VerifyEmailQuerySchema)) query: VerifyEmailQuery,
   ) {
     return this.authService.verifyEmail(query.token);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Logout (client must discard the JWT)' })
+  logout() {
+    return this.authService.logout();
   }
 }

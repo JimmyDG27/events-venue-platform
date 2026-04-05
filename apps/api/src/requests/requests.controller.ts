@@ -2,15 +2,17 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   Param,
   Patch,
   Post,
   Query,
-  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiHeader, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RequestStatus } from '@prisma/client';
+import { CurrentUser } from '@/auth/current-user.decorator';
+import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { AuthenticatedUser } from '@/auth/jwt.strategy';
 import { ZodValidationPipe } from '@/common';
 import { RequestsService } from './requests.service';
 import {
@@ -20,17 +22,9 @@ import {
   UpdateRequestStatusSchema,
 } from './requests.schema';
 
-/**
- * Temporary auth: userId is read from x-user-id header.
- * In Phase 2 this will be replaced by @UseGuards(JwtAuthGuard) + @CurrentUser().
- */
-function requireUserId(userId: string | undefined): string {
-  if (!userId) throw new UnauthorizedException('x-user-id header is required');
-  return userId;
-}
-
 @ApiTags('requests')
-@ApiHeader({ name: 'x-user-id', description: 'Temporary auth — replaced by JWT in Phase 2', required: true })
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('requests')
 export class RequestsController {
   constructor(private readonly requestsService: RequestsService) {}
@@ -38,11 +32,11 @@ export class RequestsController {
   @Post()
   @ApiOperation({ summary: 'Create an availability request for a venue' })
   create(
-    @Headers('x-user-id') userId: string | undefined,
+    @CurrentUser() user: AuthenticatedUser,
     @Body(new ZodValidationPipe(CreateRequestSchema))
     dto: ReturnType<typeof CreateRequestSchema.parse>,
   ) {
-    return this.requestsService.create(requireUserId(userId), dto);
+    return this.requestsService.create(user.id, dto);
   }
 
   @Get()
@@ -51,30 +45,30 @@ export class RequestsController {
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   findAll(
-    @Headers('x-user-id') userId: string | undefined,
+    @CurrentUser() user: AuthenticatedUser,
     @Query(new ZodValidationPipe(ListRequestsQuerySchema))
     query: ReturnType<typeof ListRequestsQuerySchema.parse>,
   ) {
-    return this.requestsService.findAll(requireUserId(userId), query);
+    return this.requestsService.findAll(user.id, query);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a single request by ID' })
   findOne(
-    @Headers('x-user-id') userId: string | undefined,
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ZodValidationPipe(RequestIdParamSchema)) id: string,
   ) {
-    return this.requestsService.findOne(requireUserId(userId), id);
+    return this.requestsService.findOne(user.id, id);
   }
 
   @Patch(':id/status')
   @ApiOperation({ summary: 'Update the status of a request' })
   updateStatus(
-    @Headers('x-user-id') userId: string | undefined,
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', new ZodValidationPipe(RequestIdParamSchema)) id: string,
     @Body(new ZodValidationPipe(UpdateRequestStatusSchema))
     dto: ReturnType<typeof UpdateRequestStatusSchema.parse>,
   ) {
-    return this.requestsService.updateStatus(requireUserId(userId), id, dto);
+    return this.requestsService.updateStatus(user.id, id, dto);
   }
 }

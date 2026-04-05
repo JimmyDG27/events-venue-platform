@@ -129,11 +129,12 @@ Phase 5: QA, Polish & Launch
   - Email verification flow on registration
   - **Summary:** `AuthModule` with `AuthService` and `AuthController`. `POST /auth/register` hashes password with bcrypt (12 rounds), generates a random 32-byte hex verification token, creates the user, sends a verification email via `NotificationsService.sendVerificationEmail()` (non-blocking — failure logged only), returns `{ user, accessToken }` with no sensitive fields. `POST /auth/login` returns 401 with identical error message for unknown email or wrong password (no user enumeration). `GET /auth/verify?token=` marks `emailVerified: true` and clears the token; returns a friendly message if already verified. JWT signed with `JWT_SECRET` + `JWT_EXPIRES_IN` via `JwtModule.registerAsync`. Login does not block unverified users (MVP) — `emailVerified` flag returned for frontend use. `emailVerificationHtml` template added to `email-templates.ts`. Prisma schema updated: `emailVerified`, `emailVerificationToken` columns added; migration `0002_add_email_verification` created. 78/78 tests, lint clean, TypeScript clean.
 
-- [ ] **2.2 — Auth middleware & route protection**
+- [✅] **2.2 — Auth middleware & route protection**
   - Middleware to protect private API routes
   - Attach authenticated user context to requests
   - Token refresh / session expiry handling
   - Logout endpoint (`POST /auth/logout`)
+  - **Summary:** `JwtStrategy` (Passport) validates Bearer tokens, fetches the user from DB, and returns `AuthenticatedUser` on `request.user`. `JwtAuthGuard` extends `AuthGuard('jwt')`. `@CurrentUser()` param decorator extracts `AuthenticatedUser` from the request. `POST /auth/logout` added (stateless JWT — returns success, client discards token). All three protected controllers (`RequestsController`, `FavoritesController`, `ViewingsController`) rewritten: removed `x-user-id` header pattern, added `@UseGuards(JwtAuthGuard)` + `@ApiBearerAuth()` at class level, all endpoints use `@CurrentUser()`. Controller unit specs updated to use `.overrideGuard(JwtAuthGuard)` pattern. E2e specs updated: `x-user-id`-based 401 tests removed (guard mock always injects the user for business-logic tests; real auth is covered by JWT strategy unit tests). 70/70 unit tests + 39/39 e2e tests, lint clean, TypeScript clean.
 
 - [ ] **2.3 — Profile settings API**
   - `GET /users/me` — get current user profile

@@ -1,9 +1,10 @@
-import { INestApplication } from '@nestjs/common';
+import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { RequestStatus } from '@prisma/client';
 import * as request from 'supertest';
+import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
 import { PrismaExceptionFilter } from '@/common/filters/prisma-exception.filter';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -61,7 +62,16 @@ describe('Requests (e2e)', () => {
         { provide: PrismaService, useValue: mockPrisma },
         { provide: ConfigService, useValue: { get: jest.fn().mockReturnValue('') } },
       ],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: (ctx: ExecutionContext) => {
+          const req = ctx.switchToHttp().getRequest<{ user: unknown }>();
+          req.user = { id: USER_ID, name: 'Alice', email: 'alice@test.com', emailVerified: true };
+          return true;
+        },
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalFilters(new PrismaExceptionFilter(), new HttpExceptionFilter());
@@ -92,7 +102,7 @@ describe('Requests (e2e)', () => {
 
       const res = await request(app.getHttpServer())
         .post('/requests')
-        .set('x-user-id', USER_ID)
+        
         .send(validBody)
         .expect(201);
 
@@ -104,7 +114,7 @@ describe('Requests (e2e)', () => {
 
       await request(app.getHttpServer())
         .post('/requests')
-        .set('x-user-id', USER_ID)
+        
         .send({ ...validBody, guests: 100 })
         .expect(400);
     });
@@ -114,22 +124,15 @@ describe('Requests (e2e)', () => {
 
       await request(app.getHttpServer())
         .post('/requests')
-        .set('x-user-id', USER_ID)
+        
         .send(validBody)
         .expect(404);
-    });
-
-    it('returns 401 when x-user-id header is missing', async () => {
-      await request(app.getHttpServer())
-        .post('/requests')
-        .send(validBody)
-        .expect(401);
     });
 
     it('returns 400 when dateTo is before dateFrom', async () => {
       await request(app.getHttpServer())
         .post('/requests')
-        .set('x-user-id', USER_ID)
+        
         .send({ ...validBody, dateTo: '2026-06-01' })
         .expect(400);
     });
@@ -137,7 +140,7 @@ describe('Requests (e2e)', () => {
     it('returns 400 when required fields are missing', async () => {
       await request(app.getHttpServer())
         .post('/requests')
-        .set('x-user-id', USER_ID)
+        
         .send({ venueId: VENUE_ID })
         .expect(400);
     });
@@ -150,7 +153,7 @@ describe('Requests (e2e)', () => {
 
       const res = await request(app.getHttpServer())
         .get('/requests')
-        .set('x-user-id', USER_ID)
+        
         .expect(200);
 
       expect(res.body.data).toHaveLength(1);
@@ -163,7 +166,7 @@ describe('Requests (e2e)', () => {
 
       await request(app.getHttpServer())
         .get('/requests?status=Cancelled')
-        .set('x-user-id', USER_ID)
+        
         .expect(200);
 
       expect(mockPrisma.availabilityRequest.findMany).toHaveBeenCalledWith(
@@ -173,9 +176,6 @@ describe('Requests (e2e)', () => {
       );
     });
 
-    it('returns 401 when x-user-id is missing', async () => {
-      await request(app.getHttpServer()).get('/requests').expect(401);
-    });
   });
 
   describe('GET /requests/:id', () => {
@@ -183,7 +183,7 @@ describe('Requests (e2e)', () => {
       mockPrisma.availabilityRequest.findFirst.mockResolvedValue(mockRequest());
       const res = await request(app.getHttpServer())
         .get(`/requests/${REQ_ID}`)
-        .set('x-user-id', USER_ID)
+        
         .expect(200);
       expect(res.body.id).toBe(REQ_ID);
     });
@@ -192,14 +192,14 @@ describe('Requests (e2e)', () => {
       mockPrisma.availabilityRequest.findFirst.mockResolvedValue(null);
       await request(app.getHttpServer())
         .get(`/requests/${REQ_ID}`)
-        .set('x-user-id', USER_ID)
+        
         .expect(404);
     });
 
     it('returns 400 for non-UUID id', async () => {
       await request(app.getHttpServer())
         .get('/requests/not-a-uuid')
-        .set('x-user-id', USER_ID)
+        
         .expect(400);
     });
   });
@@ -213,7 +213,7 @@ describe('Requests (e2e)', () => {
 
       const res = await request(app.getHttpServer())
         .patch(`/requests/${REQ_ID}/status`)
-        .set('x-user-id', USER_ID)
+        
         .send({ status: RequestStatus.Cancelled })
         .expect(200);
 
@@ -225,7 +225,7 @@ describe('Requests (e2e)', () => {
 
       await request(app.getHttpServer())
         .patch(`/requests/${REQ_ID}/status`)
-        .set('x-user-id', USER_ID)
+        
         .send({ status: RequestStatus.Cancelled })
         .expect(404);
     });
@@ -233,7 +233,7 @@ describe('Requests (e2e)', () => {
     it('returns 400 for invalid status value', async () => {
       await request(app.getHttpServer())
         .patch(`/requests/${REQ_ID}/status`)
-        .set('x-user-id', USER_ID)
+        
         .send({ status: 'InvalidStatus' })
         .expect(400);
     });
