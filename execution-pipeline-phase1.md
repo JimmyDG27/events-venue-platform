@@ -171,7 +171,7 @@ Phase 5: QA, Polish & Launch
   - Empty state and loading state handling
   - **Summary:** `app/[locale]/venues/page.tsx` — async server component reads `searchParams` (location, eventType, style, capacity, budgetMin, budgetMax, sort, page), fetches `GET /venues` with filters, renders results or empty state. `components/venues/FiltersPanel.tsx` — client form with all filter fields, submits by updating URL query params (router.push). `components/venues/SortSelect.tsx` — client dropdown that splices `sort` into existing params. `components/venues/Pagination.tsx` — client prev/next buttons. Reuses `VenueCard` from 3.1. Empty state with "adjust filters" hint. Both `en.json` and `fr.json` extended with `venues.*` namespace. 25/25 tests, lint clean, TypeScript clean.
 
-- [ ] **3.3 — Venue detail page**
+- [✅] **3.3 — Venue detail page**
   - Photo gallery (multiple images)
   - Venue details: capacity, location, available styles/themes
   - Pricing information section
@@ -179,6 +179,7 @@ Phase 5: QA, Polish & Launch
   - Favorites toggle (heart icon) — requires auth
   - Schedule a viewing button — requires auth (opens date/time picker → confirms → triggers confirmation email)
   - Mobile-first, fully responsive
+  - **Summary:** `app/[locale]/venues/[id]/page.tsx` — async server component fetches `GET /venues/:id`, calls `notFound()` on 404. `PhotoGallery` client component with prev/next arrows, dot indicators, and photo counter. Two-column layout (description + key facts + styles + pricing table | sticky CTA sidebar). `VenueActions` client component wraps `FavoriteButton` and `ScheduleViewingModal` with modal open/close state. `FavoriteButton` reads `localStorage.access_token` — redirects to `/auth/login?return=...` if unauthenticated, calls `POST/DELETE /favorites/:venueId` if authenticated. `ScheduleViewingModal` (datetime-local picker) same auth pattern, calls `POST /viewings`. i18n `venueDetail.*` namespace added. 25/25 tests, lint clean, TypeScript clean.
 
 - [ ] **3.4 — Availability request flow (UI)**
   - Multi-step form:

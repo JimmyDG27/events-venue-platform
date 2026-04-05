@@ -51,6 +51,28 @@
     "noFeaturedVenues": "No venues available at the moment.",
     "requestAvailability": "Check Availability"
   },
+  "venueDetail": {
+    "capacity": "Capacity",
+    "guests": "guests",
+    "location": "Location",
+    "styles": "Styles & Themes",
+    "pricing": "Pricing",
+    "pricingPerHour": "/ hour",
+    "pricingPerDay": "/ day",
+    "pricingMinHours": "Minimum {hours} hours",
+    "pricingOnRequest": "Price on request",
+    "requestAvailability": "Request Availability",
+    "scheduleViewing": "Schedule a Viewing",
+    "saveToFavorites": "Save to Favourites",
+    "savedToFavorites": "Saved",
+    "scheduledAt": "Select date & time",
+    "scheduleConfirm": "Confirm Viewing",
+    "scheduleSuccess": "Viewing requested!",
+    "loginRequired": "Sign in to continue",
+    "notFound": "Venue not found",
+    "backToVenues": "← Back to venues",
+    "photo": "Photo {n} of {total}"
+  },
   "venues": {
     "pageTitle": "Venues",
     "pageSubtitle": "Browse all available event spaces",

@@ -51,6 +51,28 @@
     "noFeaturedVenues": "Aucune salle disponible pour le moment.",
     "requestAvailability": "Vérifier la disponibilité"
   },
+  "venueDetail": {
+    "capacity": "Capacité",
+    "guests": "invités",
+    "location": "Lieu",
+    "styles": "Styles & Thèmes",
+    "pricing": "Tarifs",
+    "pricingPerHour": "/ heure",
+    "pricingPerDay": "/ jour",
+    "pricingMinHours": "Minimum {hours} heures",
+    "pricingOnRequest": "Tarif sur demande",
+    "requestAvailability": "Demander la disponibilité",
+    "scheduleViewing": "Planifier une visite",
+    "saveToFavorites": "Ajouter aux favoris",
+    "savedToFavorites": "Enregistré",
+    "scheduledAt": "Choisir date & heure",
+    "scheduleConfirm": "Confirmer la visite",
+    "scheduleSuccess": "Visite demandée !",
+    "loginRequired": "Se connecter pour continuer",
+    "notFound": "Salle introuvable",
+    "backToVenues": "← Retour aux salles",
+    "photo": "Photo {n} sur {total}"
+  },
   "venues": {
     "pageTitle": "Salles",
     "pageSubtitle": "Parcourez tous les espaces événementiels disponibles",
