@@ -17,6 +17,8 @@ model User {
   phone                   String?
   /// { bookingUpdates: boolean, viewingReminders: boolean, marketingEmails: boolean }
   notificationPreferences Json                  @default("{\"bookingUpdates\": true, \"marketingEmails\": false, \"viewingReminders\": true}") @map("notification_preferences")
+  emailVerified           Boolean               @default(false) @map("email_verified")
+  emailVerificationToken  String?               @unique @map("email_verification_token")
   createdAt               DateTime              @default(now()) @map("created_at")
   requests                AvailabilityRequest[]
   favorites               Favorite[]

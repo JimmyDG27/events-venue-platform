@@ -121,12 +121,13 @@ Phase 5: QA, Polish & Launch
 ## Phase 2 — Authentication
 > Depends on: Phase 0, Phase 1.1 | [can run in parallel with Phase 1.2–1.5]
 
-- [ ] **2.1 — Email-based auth (register & login)**
+- [✅] **2.1 — Email-based auth (register & login)**
   - User registration endpoint (`POST /auth/register`)
   - User login endpoint (`POST /auth/login`)
   - Password hashing (bcrypt)
   - JWT or session-based auth (secure cookie handling)
   - Email verification flow on registration
+  - **Summary:** `AuthModule` with `AuthService` and `AuthController`. `POST /auth/register` hashes password with bcrypt (12 rounds), generates a random 32-byte hex verification token, creates the user, sends a verification email via `NotificationsService.sendVerificationEmail()` (non-blocking — failure logged only), returns `{ user, accessToken }` with no sensitive fields. `POST /auth/login` returns 401 with identical error message for unknown email or wrong password (no user enumeration). `GET /auth/verify?token=` marks `emailVerified: true` and clears the token; returns a friendly message if already verified. JWT signed with `JWT_SECRET` + `JWT_EXPIRES_IN` via `JwtModule.registerAsync`. Login does not block unverified users (MVP) — `emailVerified` flag returned for frontend use. `emailVerificationHtml` template added to `email-templates.ts`. Prisma schema updated: `emailVerified`, `emailVerificationToken` columns added; migration `0002_add_email_verification` created. 78/78 tests, lint clean, TypeScript clean.
 
 - [ ] **2.2 — Auth middleware & route protection**
   - Middleware to protect private API routes

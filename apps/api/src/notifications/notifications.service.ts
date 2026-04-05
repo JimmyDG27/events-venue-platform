@@ -10,6 +10,7 @@ import {
   ViewingCreatedPayload,
 } from './notification-events';
 import {
+  emailVerificationHtml,
   requestSubmittedHtml,
   requestStatusUpdatedHtml,
   viewingScheduledHtml,
@@ -58,6 +59,20 @@ export class NotificationsService {
       // Log but do not throw — email failures must never break the API response
       this.logger.error(`Failed to send email to ${to}: ${String(error)}`);
     }
+  }
+
+  async sendVerificationEmail(
+    to: string,
+    userName: string,
+    token: string,
+  ): Promise<void> {
+    const appUrl = this.config.get<string>('APP_URL') ?? 'http://localhost:3000';
+    const verificationUrl = `${appUrl}/auth/verify?token=${token}`;
+    await this.send(
+      to,
+      'Verify your email address',
+      emailVerificationHtml({ userName, verificationUrl }),
+    );
   }
 
   @OnEvent(NotificationEvent.REQUEST_CREATED)
