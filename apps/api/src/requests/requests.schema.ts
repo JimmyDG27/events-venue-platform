@@ -4,7 +4,10 @@ import { z } from 'zod';
 export const CreateRequestSchema = z
   .object({
     venueId: z.string().uuid('venueId must be a valid UUID'),
-    dateFrom: z.coerce.date(),
+    dateFrom: z.coerce.date().refine(
+      (d) => d >= new Date(new Date().toDateString()), // midnight today — allows today
+      { message: 'dateFrom cannot be in the past' },
+    ),
     dateTo: z.coerce.date(),
     guests: z.number().int().positive('guests must be a positive integer'),
     eventType: z.string().min(1).max(100),

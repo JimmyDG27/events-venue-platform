@@ -5,16 +5,19 @@ import {
   Post,
   Query,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
+  ApiBearerAuth,
   ApiConsumes,
   ApiOperation,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { ZodValidationPipe } from '@/common';
 import { StorageService } from '@/storage/storage.service';
 import { VenuesService } from './venues.service';
@@ -64,7 +67,9 @@ export class VenuesController {
   }
 
   @Post(':id/photos')
-  @ApiOperation({ summary: 'Upload a photo for a venue (auth required in Phase 2)' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Upload a photo for a venue' })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {

@@ -12,6 +12,7 @@ const mockPrisma = {
 
 const mockConfig = {
   get: jest.fn().mockReturnValue('test-secret'),
+  getOrThrow: jest.fn().mockReturnValue('test-secret'),
 };
 
 describe('JwtStrategy', () => {

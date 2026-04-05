@@ -32,6 +32,11 @@ import { UsersModule } from './users/users.module';
         ttl: 60_000, // 60 seconds
         limit: 100,  // 100 requests per window
       },
+      {
+        name: 'auth',
+        ttl: 60_000, // 60 seconds
+        limit: 10,   // 10 requests per window — stricter for auth endpoints
+      },
     ]),
   ],
   controllers: [AppController],

@@ -28,17 +28,30 @@ export class VenuesService {
     const where: Prisma.VenueWhereInput = {};
 
     if (capacity) where.capacity = { gte: capacity };
-    if (style) where.styles = { has: style };
     if (location) where.location = { contains: location, mode: 'insensitive' };
-    // eventType matched against styles (venues tag the kinds of events they host)
-    if (eventType) where.styles = { has: eventType };
+
+    // Both style and eventType are matched against the styles[] array.
+    // When both are provided, require the array to contain BOTH values.
+    if (style && eventType) {
+      where.AND = [
+        { styles: { has: style } },
+        { styles: { has: eventType } },
+      ];
+    } else if (style) {
+      where.styles = { has: style };
+    } else if (eventType) {
+      where.styles = { has: eventType };
+    }
 
     const needsBudgetFilter = budgetMin !== undefined || budgetMax !== undefined;
     const needsPriceSort = sort === 'price_asc' || sort === 'price_desc';
 
-    // Fetch more rows when budget/price sorting requires in-memory processing
-    const fetchLimit = needsBudgetFilter || needsPriceSort ? undefined : limit;
-    const fetchSkip = needsBudgetFilter || needsPriceSort ? undefined : (page - 1) * limit;
+    // When budget filtering or price sorting is required we must process rows in-memory
+    // because Prisma cannot filter/sort on JSONB values at the DB level.
+    // Cap at 1 000 rows to prevent unbounded memory usage on large datasets.
+    const IN_MEMORY_CAP = 1_000;
+    const fetchLimit = needsBudgetFilter || needsPriceSort ? IN_MEMORY_CAP : limit;
+    const fetchSkip = needsBudgetFilter || needsPriceSort ? 0 : (page - 1) * limit;
 
     const orderBy = this.buildOrderBy(sort);
 

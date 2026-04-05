@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 interface FavoriteButtonProps {
   venueId: string;
@@ -14,6 +16,24 @@ export function FavoriteButton({ venueId }: FavoriteButtonProps) {
   const router = useRouter();
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // On mount, check if this venue is already in the user's favorites
+  useEffect(() => {
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    if (!token) return;
+
+    void fetch(`${API_URL}/favorites`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { data: { venue: { id: string } }[] } | null) => {
+        if (!data) return;
+        const isFavorited = data.data.some((f) => f.venue.id === venueId);
+        setSaved(isFavorited);
+      })
+      .catch(() => {});
+  }, [venueId]);
 
   async function handleToggle() {
     const token =
@@ -27,14 +47,13 @@ export function FavoriteButton({ venueId }: FavoriteButtonProps) {
     setLoading(true);
     try {
       const method = saved ? 'DELETE' : 'POST';
-      await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'}/favorites/${venueId}`,
-        {
-          method,
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      setSaved((s) => !s);
+      const res = await fetch(`${API_URL}/favorites/${venueId}`, {
+        method,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok || res.status === 204) {
+        setSaved((s) => !s);
+      }
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,40 @@
+export interface AvailabilityRequest {
+  id: string;
+  venueId: string;
+  venue?: { name: string; location: string };
+  dateFrom: string;
+  dateTo: string;
+  guests: number;
+  eventType: string;
+  message?: string | null;
+  status: 'Active' | 'Completed' | 'Rejected' | 'Cancelled';
+  createdAt: string;
+}
+
+export interface Viewing {
+  id: string;
+  venueId: string;
+  venue?: { name: string; location: string };
+  scheduledAt: string;
+  status: 'Scheduled' | 'Completed' | 'Cancelled';
+  createdAt: string;
+}
+
+export interface NotificationPreferences {
+  bookingUpdates?: boolean;
+  viewingReminders?: boolean;
+  marketingEmails?: boolean;
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  notificationPreferences?: NotificationPreferences;
+  createdAt: string;
+}
+
 export interface VenuePricing {
   currency: string;
   pricePerHour?: number;
@@ -25,6 +62,12 @@ export interface PaginatedResponse<T> {
     limit: number;
     pages: number;
   };
+}
+
+/** Simpler list response used by /favorites and /viewings (no page/limit/pages). */
+export interface ListResponse<T> {
+  data: T[];
+  meta: { total: number };
 }
 
 export type VenuesResponse = PaginatedResponse<Venue>;

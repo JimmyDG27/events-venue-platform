@@ -1,6 +1,13 @@
 {
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "supabase"
   ],
-  "enableAllProjectMcpServers": true
+  "permissions": {
+    "allow": [
+      "Read(//Users/dimitargeorgievj/Documents/**)",
+      "Bash(pnpm --filter api add bcrypt)",
+      "Bash(pnpm --filter api add -D @types/bcrypt)"
+    ]
+  }
 }
