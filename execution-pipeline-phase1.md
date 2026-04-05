@@ -303,7 +303,7 @@ Phase 5: QA, Polish & Launch
 | Phase | Status | Notes |
 |---|---|---|
 | Phase 0 — Setup | ✅ Done | 0.1–0.4 complete |
-| Phase 1 — Backend API | 🟡 In Progress | |
+| Phase 1 — Backend API | ✅ Done | 1.1–1.6 complete |
 | Phase 2 — Auth | 🔲 Not started | |
 | Phase 3 — Public Frontend | 🔲 Not started | |
 | Phase 4 — User Dashboard | 🔲 Not started | |
