@@ -163,12 +163,13 @@ Phase 5: QA, Polish & Launch
   - Connected to `GET /venues` API with search params
   - **Summary:** `lib/types.ts` defines `Venue`, `VenuesResponse`, `VenueFilters` types. `lib/api.ts` typed API client with `getVenues(filters)` and `getVenue(id)` (reads `NEXT_PUBLIC_API_URL`). `i18n/navigation.ts` exposes `createNavigation` utilities for typed locale-aware routing. `Navbar` (client) and `Footer` (server) layout components in `components/layout/`. Homepage in `app/[locale]/page.tsx`: full-height hero with radial gradient accent, display headline, `SearchBar` client component (event type + location + guests → navigates to `/venues?...`), `FeaturedVenues` async server component (fetches `GET /venues?limit=6`, gracefully empty on API unavailability, Suspense skeleton). Locale layout updated to mount `<Navbar>` + `<Footer>` around page content. i18n messages extended with `home.*` and `footer.*` keys in both `en.json` and `fr.json`. Pre-existing `Modal.tsx` react-hooks/set-state-in-effect lint issue fixed with targeted disable comment. Fixed `eslint-plugin-react-hooks` missing dep. 25/25 tests, lint clean, TypeScript clean.
 
-- [ ] **3.2 — Venues listing page**
+- [✅] **3.2 — Venues listing page**
   - Filter sidebar/panel: budget, capacity, style/theme, event type, location
   - Sorting options (price, capacity, relevance)
   - Venue cards with key info (photo, name, capacity, location, price range)
   - Pagination or infinite scroll
   - Empty state and loading state handling
+  - **Summary:** `app/[locale]/venues/page.tsx` — async server component reads `searchParams` (location, eventType, style, capacity, budgetMin, budgetMax, sort, page), fetches `GET /venues` with filters, renders results or empty state. `components/venues/FiltersPanel.tsx` — client form with all filter fields, submits by updating URL query params (router.push). `components/venues/SortSelect.tsx` — client dropdown that splices `sort` into existing params. `components/venues/Pagination.tsx` — client prev/next buttons. Reuses `VenueCard` from 3.1. Empty state with "adjust filters" hint. Both `en.json` and `fr.json` extended with `venues.*` namespace. 25/25 tests, lint clean, TypeScript clean.
 
 - [ ] **3.3 — Venue detail page**
   - Photo gallery (multiple images)
