@@ -200,11 +200,12 @@ Phase 5: QA, Polish & Launch
   - SEO: meta tags, Open Graph tags, page titles
   - **Summary:** `app/[locale]/about/page.tsx` — static editorial page: hero, mission section, 3-step "how it works" grid, green CTA banner. `app/[locale]/contact/page.tsx` — client form (name, email, message) with success state (static — no backend needed in Phase 3). Root `layout.tsx` extended with full OpenGraph and Twitter meta + `title.template` for per-page titles. `about/page.tsx` exports `generateMetadata`. `about.*` and `contact.*` i18n namespaces added to en/fr. 25/25 tests, lint clean, TypeScript clean.
 
-- [ ] **3.6 — Frontend component tests (public website)**
+- [✅] **3.6 — Frontend component tests (public website)**
   - Component tests for search bar, filter panel, venue card
   - Form validation tests for availability request flow
   - Multi-language rendering tests
   - Tool: React Testing Library + Jest/Vitest
+  - **Summary:** 26 new tests across 5 test files. `SearchBar`: renders 3 inputs, submits with correct query params (location, eventType, capacity). `VenueCard`: renders name/location/price/styles, links to detail page. `FiltersPanel`: renders fields, populates from initialValues, clears to base path, submits with filter params. `Pagination`: hides at 1 page, enables/disables prev/next, navigates to correct page. `RequestForm`: redirects to login without token, renders step 1 labels, validates required fields, advances on valid dates. All mocked `next-intl`, `@/i18n/navigation`, and `next/image`. 51/51 tests, lint clean, TypeScript clean.
 
 ---
 
@@ -314,7 +315,7 @@ Phase 5: QA, Polish & Launch
 | Phase 0 — Setup | ✅ Done | 0.1–0.4 complete |
 | Phase 1 — Backend API | ✅ Done | 1.1–1.6 complete |
 | Phase 2 — Auth | ✅ Done | 2.1–2.4 complete |
-| Phase 3 — Public Frontend | 🔲 Not started | |
+| Phase 3 — Public Frontend | ✅ Done | 3.1–3.6 complete |
 | Phase 4 — User Dashboard | 🔲 Not started | |
 | Phase 5 — QA & Launch | 🔲 Not started | |
 
