@@ -134,7 +134,7 @@ Phase 5: QA, Polish & Launch
   - Attach authenticated user context to requests
   - Token refresh / session expiry handling
   - Logout endpoint (`POST /auth/logout`)
-  - **Summary:** `JwtStrategy` (Passport) validates Bearer tokens, fetches the user from DB, and returns `AuthenticatedUser` on `request.user`. `JwtAuthGuard` extends `AuthGuard('jwt')`. `@CurrentUser()` param decorator extracts `AuthenticatedUser` from the request. `POST /auth/logout` added (stateless JWT — returns success, client discards token). All three protected controllers (`RequestsController`, `FavoritesController`, `ViewingsController`) rewritten: removed `x-user-id` header pattern, added `@UseGuards(JwtAuthGuard)` + `@ApiBearerAuth()` at class level, all endpoints use `@CurrentUser()`. Controller unit specs updated to use `.overrideGuard(JwtAuthGuard)` pattern. E2e specs updated: `x-user-id`-based 401 tests removed (guard mock always injects the user for business-logic tests; real auth is covered by JWT strategy unit tests). 70/70 unit tests + 39/39 e2e tests, lint clean, TypeScript clean.
+  - **Summary:** `JwtStrategy` (Passport) validates Bearer tokens, fetches the user from DB, and returns `AuthenticatedUser` on `request.user`. `JwtAuthGuard` extends `AuthGuard('jwt')`. `@CurrentUser()` param decorator extracts `AuthenticatedUser` from the request. `POST /auth/logout` added (stateless JWT — returns success, client discards token). All three protected controllers (`RequestsController`, `FavoritesController`, `ViewingsController`) rewritten: removed `x-user-id` header pattern, added `@UseGuards(JwtAuthGuard)` + `@ApiBearerAuth()` at class level, all endpoints use `@CurrentUser()`. Controller unit specs updated to use `.overrideGuard(JwtAuthGuard)` pattern. E2e specs updated: `x-user-id`-based 401 tests removed (guard mock always injects the user for business-logic tests; real auth is covered by JWT strategy unit tests). Note: token refresh not implemented — JWT expiry is governed by `JWT_EXPIRES_IN` env var (default 7d); a refresh token endpoint (Redis blocklist) is deferred to post-MVP. 70/70 unit tests + 39/39 e2e tests, lint clean, TypeScript clean.
 
 - [✅] **2.3 — Profile settings API**
   - `GET /users/me` — get current user profile
@@ -308,7 +308,7 @@ Phase 5: QA, Polish & Launch
 |---|---|---|
 | Phase 0 — Setup | ✅ Done | 0.1–0.4 complete |
 | Phase 1 — Backend API | ✅ Done | 1.1–1.6 complete |
-| Phase 2 — Auth | 🔲 Not started | |
+| Phase 2 — Auth | ✅ Done | 2.1–2.4 complete |
 | Phase 3 — Public Frontend | 🔲 Not started | |
 | Phase 4 — User Dashboard | 🔲 Not started | |
 | Phase 5 — QA & Launch | 🔲 Not started | |
