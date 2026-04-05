@@ -3,8 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma, RequestStatus } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
+import {
+  NotificationEvent,
+  RequestCreatedPayload,
+  RequestStatusUpdatedPayload,
+} from '@/notifications/notification-events';
 import {
   CreateRequestDto,
   ListRequestsQuery,
@@ -13,12 +19,16 @@ import {
 
 @Injectable()
 export class RequestsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly events: EventEmitter2,
+  ) {}
 
   async create(userId: string, dto: CreateRequestDto) {
-    const venue = await this.prisma.venue.findUnique({
-      where: { id: dto.venueId },
-    });
+    const [venue, user] = await Promise.all([
+      this.prisma.venue.findUnique({ where: { id: dto.venueId } }),
+      this.prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } }),
+    ]);
 
     if (!venue) {
       throw new NotFoundException(`Venue ${dto.venueId} not found`);
@@ -30,7 +40,7 @@ export class RequestsService {
       );
     }
 
-    return this.prisma.availabilityRequest.create({
+    const request = await this.prisma.availabilityRequest.create({
       data: {
         userId,
         venueId: dto.venueId,
@@ -43,6 +53,23 @@ export class RequestsService {
       },
       include: { venue: true },
     });
+
+    if (user) {
+      const payload: RequestCreatedPayload = {
+        userId,
+        userName: user.name,
+        userEmail: user.email,
+        venueName: venue.name,
+        venueLocation: venue.location,
+        dateFrom: dto.dateFrom,
+        dateTo: dto.dateTo,
+        guests: dto.guests,
+        eventType: dto.eventType,
+      };
+      this.events.emit(NotificationEvent.REQUEST_CREATED, payload);
+    }
+
+    return request;
   }
 
   async findAll(userId: string, query: ListRequestsQuery) {
@@ -89,10 +116,27 @@ export class RequestsService {
     // Verify ownership — throws 404 if not found or not owned by this user
     await this.findOne(userId, id);
 
-    return this.prisma.availabilityRequest.update({
-      where: { id },
-      data: { status: dto.status },
-      include: { venue: true },
-    });
+    const [updated, user] = await Promise.all([
+      this.prisma.availabilityRequest.update({
+        where: { id },
+        data: { status: dto.status },
+        include: { venue: true },
+      }),
+      this.prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } }),
+    ]);
+
+    if (user) {
+      const payload: RequestStatusUpdatedPayload = {
+        userId,
+        userName: user.name,
+        userEmail: user.email,
+        venueName: updated.venue.name,
+        newStatus: dto.status,
+        eventType: updated.eventType,
+      };
+      this.events.emit(NotificationEvent.REQUEST_STATUS_UPDATED, payload);
+    }
+
+    return updated;
   }
 }

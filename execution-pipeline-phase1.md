@@ -98,7 +98,7 @@ Phase 5: QA, Polish & Launch
   - `PATCH /viewings/:id` — update or cancel a viewing
   - **Summary:** `FavoritesModule`: `POST /favorites/:venueId` verifies venue exists then creates (P2002→409 via PrismaExceptionFilter for duplicates), `DELETE /favorites/:venueId` uses Prisma composite unique key `userId_venueId`, `GET /favorites` returns all with venue included. `ViewingsModule`: `POST /viewings` validates scheduledAt is in the future, creates with `Scheduled` status; `GET /viewings` accepts `?filter=upcoming|past|all`; `PATCH /viewings/:id` enforces ownership, blocks updates on cancelled viewings. Both modules use `x-user-id` header stub (Phase 2 replaces with JWT). 49/49 tests, lint clean, TypeScript clean.
 
-- [ ] **1.5 — Email notification service**
+- [✅] **1.5 — Email notification service**
   - Transactional email provider setup (Resend or SendGrid)
   - Email templates:
     - Request submitted confirmation (to user)
@@ -107,6 +107,7 @@ Phase 5: QA, Polish & Launch
     - Viewing reminder
   - Queue-based email sending (avoid blocking API)
   - Marketing email opt-in/opt-out support (notification preferences)
+  - **Summary:** `NotificationsModule` with `NotificationsService` wrapping the Resend SDK. Async event-based dispatch via `@nestjs/event-emitter`: `RequestsService` and `ViewingsService` emit `request.created`, `request.status_updated`, and `viewing.created` events after their respective DB writes; `NotificationsService` handles each with `@OnEvent()`. Email failures are caught and logged — never thrown — so the API response is never blocked. User `notification_preferences` (JSONB) checked before each send: `bookingUpdates` gates request emails, `viewingReminders` gates viewing emails. HTML templates in `email-templates.ts`. 56/56 tests, lint clean, TypeScript clean.
 
 - [ ] **1.6 — Backend unit & integration tests**
   - Unit tests for business logic (capacity validation, status transitions)

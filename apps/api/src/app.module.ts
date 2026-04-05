@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,15 +10,18 @@ import { VenuesModule } from './venues/venues.module';
 import { RequestsModule } from './requests/requests.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { ViewingsModule } from './viewings/viewings.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    EventEmitterModule.forRoot(),
     PrismaModule,
     VenuesModule,
     RequestsModule,
     FavoritesModule,
     ViewingsModule,
+    NotificationsModule,
     ThrottlerModule.forRoot([
       {
         name: 'default',

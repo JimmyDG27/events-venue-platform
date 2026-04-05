@@ -1,4 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RequestStatus } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -34,6 +35,7 @@ const dto = {
 
 const mockPrisma = {
   venue: { findUnique: jest.fn() },
+  user: { findUnique: jest.fn() },
   availabilityRequest: {
     create: jest.fn(),
     findMany: jest.fn(),
@@ -43,6 +45,8 @@ const mockPrisma = {
   },
 };
 
+const mockEvents = { emit: jest.fn() };
+
 describe('RequestsService', () => {
   let service: RequestsService;
 
@@ -51,6 +55,7 @@ describe('RequestsService', () => {
       providers: [
         RequestsService,
         { provide: PrismaService, useValue: mockPrisma },
+        { provide: EventEmitter2, useValue: mockEvents },
       ],
     }).compile();
 
@@ -61,6 +66,7 @@ describe('RequestsService', () => {
   describe('create', () => {
     it('creates a request when guests ≤ capacity', async () => {
       mockPrisma.venue.findUnique.mockResolvedValue(mockVenue);
+      mockPrisma.user.findUnique.mockResolvedValue({ name: 'Alice', email: 'alice@test.com' });
       mockPrisma.availabilityRequest.create.mockResolvedValue(mockRequest());
 
       const result = await service.create(USER_ID, dto);
@@ -74,6 +80,7 @@ describe('RequestsService', () => {
 
     it('throws BadRequestException when guests exceed capacity', async () => {
       mockPrisma.venue.findUnique.mockResolvedValue({ ...mockVenue, capacity: 50 });
+      mockPrisma.user.findUnique.mockResolvedValue({ name: 'Alice', email: 'alice@test.com' });
 
       await expect(service.create(USER_ID, { ...dto, guests: 100 })).rejects.toThrow(
         BadRequestException,
@@ -82,6 +89,7 @@ describe('RequestsService', () => {
 
     it('throws NotFoundException when venue does not exist', async () => {
       mockPrisma.venue.findUnique.mockResolvedValue(null);
+      mockPrisma.user.findUnique.mockResolvedValue({ name: 'Alice', email: 'alice@test.com' });
       await expect(service.create(USER_ID, dto)).rejects.toThrow(NotFoundException);
     });
   });
@@ -135,6 +143,7 @@ describe('RequestsService', () => {
       mockPrisma.availabilityRequest.update.mockResolvedValue(
         mockRequest({ status: RequestStatus.Cancelled }),
       );
+      mockPrisma.user.findUnique.mockResolvedValue({ name: 'Alice', email: 'alice@test.com' });
 
       const result = await service.updateStatus(USER_ID, REQ_ID, {
         status: RequestStatus.Cancelled,

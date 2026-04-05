@@ -1,4 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ViewingStatus } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -23,6 +24,7 @@ const mockViewing = (overrides = {}) => ({
 
 const mockPrisma = {
   venue: { findUnique: jest.fn() },
+  user: { findUnique: jest.fn() },
   viewing: {
     create: jest.fn(),
     findMany: jest.fn(),
@@ -30,6 +32,8 @@ const mockPrisma = {
     update: jest.fn(),
   },
 };
+
+const mockEvents = { emit: jest.fn() };
 
 describe('ViewingsService', () => {
   let service: ViewingsService;
@@ -39,6 +43,7 @@ describe('ViewingsService', () => {
       providers: [
         ViewingsService,
         { provide: PrismaService, useValue: mockPrisma },
+        { provide: EventEmitter2, useValue: mockEvents },
       ],
     }).compile();
     service = module.get<ViewingsService>(ViewingsService);
@@ -50,6 +55,7 @@ describe('ViewingsService', () => {
 
     it('creates a viewing with Scheduled status', async () => {
       mockPrisma.venue.findUnique.mockResolvedValue(mockVenue);
+      mockPrisma.user.findUnique.mockResolvedValue({ name: 'Alice', email: 'alice@test.com' });
       mockPrisma.viewing.create.mockResolvedValue(mockViewing());
 
       const result = await service.create(USER_ID, dto);
@@ -63,6 +69,7 @@ describe('ViewingsService', () => {
 
     it('throws NotFoundException when venue does not exist', async () => {
       mockPrisma.venue.findUnique.mockResolvedValue(null);
+      mockPrisma.user.findUnique.mockResolvedValue({ name: 'Alice', email: 'alice@test.com' });
       await expect(service.create(USER_ID, dto)).rejects.toThrow(NotFoundException);
     });
   });
