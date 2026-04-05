@@ -145,10 +145,11 @@ Phase 5: QA, Polish & Launch
     - Marketing emails
   - **Summary:** `UsersModule` with `UsersService` and `UsersController`. `GET /users/me` returns profile without sensitive fields (no `passwordHash`, no `emailVerificationToken`). `PATCH /users/me` validates with Zod, requires at least one field, checks email uniqueness (409 if taken by another user). `PATCH /users/me/notifications` merges partial preferences with existing JSONB defaults (`bookingUpdates`, `viewingReminders`, `marketingEmails`). All routes protected by `JwtAuthGuard`. `UsersModule` added to `AppModule`. 80/80 unit tests + 47/47 e2e tests, lint clean, TypeScript clean.
 
-- [ ] **2.4 — Auth unit & integration tests**
+- [✅] **2.4 — Auth unit & integration tests**
   - Register / login / logout flow tests
   - Protected route access tests (with and without valid token)
   - Notification preference update tests
+  - **Summary:** `auth.controller.spec.ts` added — 4 tests delegating register/login/verifyEmail/logout to `AuthService`. `jwt.strategy.spec.ts` added — validates token payload lookup and `UnauthorizedException` when user is deleted. `auth.e2e-spec.ts` added — 13 integration tests covering the full register/login/verify/logout flow with proper 201/200/400/401/409 status codes, sensitive field exclusion, and edge cases. 86/86 unit tests + 60/60 e2e tests, lint clean, TypeScript clean.
 
 ---
 
