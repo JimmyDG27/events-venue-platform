@@ -4,6 +4,9 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
+import { AuthProvider } from '@/contexts/AuthContext';
 import '../globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -22,8 +25,22 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: 'Venue Booking Platform',
-  description: 'Discover and book unique event venues',
+  title: {
+    default: 'Venue Booking Platform',
+    template: '%s | Venue Booking Platform',
+  },
+  description: 'Discover and book unique event venues across London for weddings, corporate events, and more.',
+  openGraph: {
+    type: 'website',
+    siteName: 'Venue Booking Platform',
+    title: 'Venue Booking Platform',
+    description: 'Discover and book unique event venues across London.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Venue Booking Platform',
+    description: 'Discover and book unique event venues across London.',
+  },
 };
 
 type Props = {
@@ -47,7 +64,14 @@ export default async function LocaleLayout({ children, params }: Props) {
     >
       <body className="font-body">
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <AuthProvider>
+            <a href="#main-content" className="skip-link">
+              Skip to main content
+            </a>
+            <Navbar />
+            <main id="main-content">{children}</main>
+            <Footer />
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

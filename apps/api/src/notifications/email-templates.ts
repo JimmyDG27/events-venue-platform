@@ -1,5 +1,15 @@
 import { RequestStatus } from '@prisma/client';
 
+/** Escape user-supplied strings before interpolating them into HTML email bodies. */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-GB', {
     weekday: 'long',
@@ -45,7 +55,11 @@ export function requestSubmittedHtml(params: {
   guests: number;
   eventType: string;
 }): string {
-  const { userName, venueName, venueLocation, dateFrom, dateTo, guests, eventType } = params;
+  const { dateFrom, dateTo, guests } = params;
+  const userName = escapeHtml(params.userName);
+  const venueName = escapeHtml(params.venueName);
+  const venueLocation = escapeHtml(params.venueLocation);
+  const eventType = escapeHtml(params.eventType);
   return `
 <!DOCTYPE html>
 <html>
@@ -94,7 +108,10 @@ export function requestStatusUpdatedHtml(params: {
   newStatus: RequestStatus;
   eventType: string;
 }): string {
-  const { userName, venueName, newStatus, eventType } = params;
+  const { newStatus } = params;
+  const userName = escapeHtml(params.userName);
+  const venueName = escapeHtml(params.venueName);
+  const eventType = escapeHtml(params.eventType);
   const label = statusLabels[newStatus];
   const message = statusMessages[newStatus];
   const accentColor = newStatus === RequestStatus.Completed ? '#2C4A3E' : '#8A8278';
@@ -127,7 +144,10 @@ export function viewingScheduledHtml(params: {
   venueLocation: string;
   scheduledAt: Date;
 }): string {
-  const { userName, venueName, venueLocation, scheduledAt } = params;
+  const { scheduledAt } = params;
+  const userName = escapeHtml(params.userName);
+  const venueName = escapeHtml(params.venueName);
+  const venueLocation = escapeHtml(params.venueLocation);
   return `
 <!DOCTYPE html>
 <html>
@@ -166,7 +186,8 @@ export function emailVerificationHtml(params: {
   userName: string;
   verificationUrl: string;
 }): string {
-  const { userName, verificationUrl } = params;
+  const userName = escapeHtml(params.userName);
+  const { verificationUrl } = params;
   return `
 <!DOCTYPE html>
 <html>

@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils';
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   imageSrc?: string;
   imageAlt?: string;
+  imageSizes?: string;
+  imagePriority?: boolean;
   title: string;
   subtitle?: string;
   footer?: React.ReactNode;
@@ -13,6 +15,8 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 export function Card({
   imageSrc,
   imageAlt,
+  imageSizes = '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
+  imagePriority = false,
   title,
   subtitle,
   footer,
@@ -36,6 +40,8 @@ export function Card({
             src={imageSrc}
             alt={imageAlt ?? title}
             fill
+            sizes={imageSizes}
+            priority={imagePriority}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>

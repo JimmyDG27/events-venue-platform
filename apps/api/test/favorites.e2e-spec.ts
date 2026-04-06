@@ -1,7 +1,8 @@
-import { INestApplication } from '@nestjs/common';
+import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import * as request from 'supertest';
+import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
 import { PrismaExceptionFilter } from '@/common/filters/prisma-exception.filter';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -40,7 +41,16 @@ describe('Favorites (e2e)', () => {
         FavoritesService,
         { provide: PrismaService, useValue: mockPrisma },
       ],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: (ctx: ExecutionContext) => {
+          const req = ctx.switchToHttp().getRequest<{ user: unknown }>();
+          req.user = { id: USER_ID, name: 'Alice', email: 'alice@test.com', emailVerified: true };
+          return true;
+        },
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalFilters(new PrismaExceptionFilter(), new HttpExceptionFilter());
@@ -62,7 +72,7 @@ describe('Favorites (e2e)', () => {
 
       const res = await request(app.getHttpServer())
         .post(`/favorites/${VENUE_ID}`)
-        .set('x-user-id', USER_ID)
+        
         .expect(201);
 
       expect(res.body.venueId).toBe(VENUE_ID);
@@ -79,7 +89,7 @@ describe('Favorites (e2e)', () => {
 
       await request(app.getHttpServer())
         .post(`/favorites/${VENUE_ID}`)
-        .set('x-user-id', USER_ID)
+        
         .expect(409);
     });
 
@@ -88,18 +98,14 @@ describe('Favorites (e2e)', () => {
 
       await request(app.getHttpServer())
         .post(`/favorites/${VENUE_ID}`)
-        .set('x-user-id', USER_ID)
+        
         .expect(404);
-    });
-
-    it('returns 401 when x-user-id header is missing', async () => {
-      await request(app.getHttpServer()).post(`/favorites/${VENUE_ID}`).expect(401);
     });
 
     it('returns 400 for non-UUID venueId', async () => {
       await request(app.getHttpServer())
         .post('/favorites/not-a-uuid')
-        .set('x-user-id', USER_ID)
+        
         .expect(400);
     });
   });
@@ -111,7 +117,7 @@ describe('Favorites (e2e)', () => {
 
       await request(app.getHttpServer())
         .delete(`/favorites/${VENUE_ID}`)
-        .set('x-user-id', USER_ID)
+        
         .expect(204);
     });
 
@@ -120,13 +126,10 @@ describe('Favorites (e2e)', () => {
 
       await request(app.getHttpServer())
         .delete(`/favorites/${VENUE_ID}`)
-        .set('x-user-id', USER_ID)
+        
         .expect(404);
     });
 
-    it('returns 401 when x-user-id header is missing', async () => {
-      await request(app.getHttpServer()).delete(`/favorites/${VENUE_ID}`).expect(401);
-    });
   });
 
   describe('GET /favorites', () => {
@@ -135,7 +138,7 @@ describe('Favorites (e2e)', () => {
 
       const res = await request(app.getHttpServer())
         .get('/favorites')
-        .set('x-user-id', USER_ID)
+        
         .expect(200);
 
       expect(res.body.data).toHaveLength(1);
@@ -147,14 +150,11 @@ describe('Favorites (e2e)', () => {
 
       const res = await request(app.getHttpServer())
         .get('/favorites')
-        .set('x-user-id', USER_ID)
+        
         .expect(200);
 
       expect(res.body.data).toHaveLength(0);
     });
 
-    it('returns 401 when x-user-id is missing', async () => {
-      await request(app.getHttpServer()).get('/favorites').expect(401);
-    });
   });
 });

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -115,6 +116,14 @@ export class RequestsService {
   ) {
     // Verify ownership — throws 404 if not found or not owned by this user
     await this.findOne(userId, id);
+
+    // Users may only cancel their own requests.
+    // Completed / Rejected / Active transitions are reserved for venue owners (post-MVP admin role).
+    if (dto.status !== RequestStatus.Cancelled) {
+      throw new ForbiddenException(
+        'You may only cancel your own requests. Status changes to Completed, Rejected, or Active require venue-owner permissions.',
+      );
+    }
 
     const [updated, user] = await Promise.all([
       this.prisma.availabilityRequest.update({

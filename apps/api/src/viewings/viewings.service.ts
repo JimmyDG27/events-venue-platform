@@ -30,6 +30,21 @@ export class ViewingsService {
     ]);
     if (!venue) throw new NotFoundException(`Venue ${dto.venueId} not found`);
 
+    // Prevent scheduling a duplicate viewing for the same venue at the same time
+    const duplicate = await this.prisma.viewing.findFirst({
+      where: {
+        userId,
+        venueId: dto.venueId,
+        scheduledAt: dto.scheduledAt,
+        status: ViewingStatus.Scheduled,
+      },
+    });
+    if (duplicate) {
+      throw new BadRequestException(
+        'You already have a viewing scheduled for this venue at that date and time.',
+      );
+    }
+
     const viewing = await this.prisma.viewing.create({
       data: {
         userId,

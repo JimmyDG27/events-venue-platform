@@ -49,7 +49,9 @@ describe('VenuesController', () => {
   });
 
   it('uploadPhoto returns url and updated photos', async () => {
-    const file = { originalname: 'photo.jpg', mimetype: 'image/jpeg', buffer: Buffer.from(''), size: 0 } as Express.Multer.File;
+    // JPEG magic bytes: FF D8 FF (padded to 12 bytes for the magic-byte check)
+    const jpegMagic = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01]);
+    const file = { originalname: 'photo.jpg', mimetype: 'image/jpeg', buffer: jpegMagic, size: jpegMagic.length } as Express.Multer.File;
     mockStorageService.upload.mockResolvedValue('https://r2.dev/venues/photo.jpg');
     mockVenuesService.findOne.mockResolvedValue({ id: 'some-uuid', photos: [] });
     mockVenuesService.addPhoto.mockResolvedValue({ photos: ['https://r2.dev/venues/photo.jpg'] });

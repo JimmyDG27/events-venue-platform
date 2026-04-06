@@ -7,7 +7,7 @@
     /* Color tokens — raw RGB channels for Tailwind opacity modifier support */
     --color-bg: 247 245 240;           /* #F7F5F0 — warm parchment */
     --color-fg: 28 25 22;              /* #1C1916 — warm near-black */
-    --color-muted: 138 130 120;        /* #8A8278 — warm taupe */
+    --color-muted: 112 107 100;        /* #706B64 — warm taupe, 4.86:1 on bg (WCAG AA) */
     --color-surface: 237 234 228;      /* #EDEAE4 — card / input bg */
     --color-border: 216 212 204;       /* #D8D4CC — subtle warm border */
     --color-accent: 44 74 62;          /* #2C4A3E — deep forest green */
@@ -29,5 +29,32 @@
   ::selection {
     background-color: rgb(var(--color-accent));
     color: rgb(var(--color-accent-fg));
+  }
+
+  /* Visible keyboard focus indicator for all interactive elements */
+  *:focus-visible {
+    outline: 2px solid rgb(var(--color-accent));
+    outline-offset: 3px;
+  }
+
+  /* Skip-to-content link — visually hidden until focused */
+  .skip-link {
+    position: absolute;
+    top: -9999px;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background-color: rgb(var(--color-accent));
+    color: rgb(var(--color-accent-fg));
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+  }
+
+  .skip-link:focus-visible {
+    top: 1rem;
+    outline: none;
   }
 }

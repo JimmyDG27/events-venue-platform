@@ -12,6 +12,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { ViewingsModule } from './viewings/viewings.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -24,11 +25,17 @@ import { AuthModule } from './auth/auth.module';
     ViewingsModule,
     NotificationsModule,
     AuthModule,
+    UsersModule,
     ThrottlerModule.forRoot([
       {
         name: 'default',
         ttl: 60_000, // 60 seconds
         limit: 100,  // 100 requests per window
+      },
+      {
+        name: 'auth',
+        ttl: 60_000, // 60 seconds
+        limit: 10,   // 10 requests per window — stricter for auth endpoints
       },
     ]),
   ],

@@ -108,6 +108,12 @@ export class AuthService {
     return { message: 'Email verified successfully' };
   }
 
+  logout() {
+    // JWT is stateless — the client discards the token on logout.
+    // A token blocklist (Redis) can be added post-MVP if needed.
+    return { message: 'Logged out successfully' };
+  }
+
   private signToken(userId: string, email: string): string {
     const payload: JwtPayload = { sub: userId, email };
     return this.jwt.sign(payload);

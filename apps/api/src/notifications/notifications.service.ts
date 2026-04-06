@@ -51,9 +51,14 @@ export class NotificationsService {
     };
   }
 
+  /** Strip CR/LF from subject to prevent email header injection. */
+  private sanitizeSubject(subject: string): string {
+    return subject.replace(/[\r\n]/g, ' ').trim();
+  }
+
   private async send(to: string, subject: string, html: string): Promise<void> {
     try {
-      await this.resend.emails.send({ from: this.fromEmail, to, subject, html });
+      await this.resend.emails.send({ from: this.fromEmail, to, subject: this.sanitizeSubject(subject), html });
       this.logger.log(`Email sent: "${subject}" → ${to}`);
     } catch (error) {
       // Log but do not throw — email failures must never break the API response
