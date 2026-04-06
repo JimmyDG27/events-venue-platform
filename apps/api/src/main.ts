@@ -26,15 +26,17 @@ async function bootstrap() {
   // Request logging
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // Swagger / OpenAPI
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Booking Platform API')
-    .setDescription('Events Venue Discovery & Booking Platform — Phase 1 MVP')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
+  // Swagger / OpenAPI — disabled in production to avoid exposing the API surface
+  if (process.env.NODE_ENV !== 'production') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('Booking Platform API')
+      .setDescription('Events Venue Discovery & Booking Platform — Phase 1 MVP')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   const port = process.env.PORT ?? 3001;
   await app.listen(port);

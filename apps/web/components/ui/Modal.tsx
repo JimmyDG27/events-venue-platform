@@ -14,6 +14,7 @@ export interface ModalProps {
 
 export function Modal({ open, onClose, title, children, className }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<Element | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -22,44 +23,49 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (open) {
+      // Remember which element triggered the modal so we can restore focus
+      triggerRef.current = document.activeElement;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
 
-      if (e.key === 'Tab' && dialogRef.current) {
-        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-        );
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
+        if (e.key === 'Tab' && dialogRef.current) {
+          const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          );
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
 
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last?.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first?.focus();
+          if (e.shiftKey) {
+            if (document.activeElement === first) {
+              e.preventDefault();
+              last?.focus();
+            }
+          } else {
+            if (document.activeElement === last) {
+              e.preventDefault();
+              first?.focus();
+            }
           }
         }
-      }
-    };
+      };
 
-    document.addEventListener('keydown', handleKeyDown);
-    document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
 
-    const firstFocusable = dialogRef.current?.querySelector<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-    );
-    firstFocusable?.focus();
+      const firstFocusable = dialogRef.current?.querySelector<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      firstFocusable?.focus();
 
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
-    };
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = '';
+        // Restore focus to the element that opened the modal
+        (triggerRef.current as HTMLElement | null)?.focus();
+      };
+    }
   }, [open, onClose]);
 
   if (!mounted || !open) return null;

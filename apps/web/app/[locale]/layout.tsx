@@ -65,8 +65,11 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className="font-body">
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
+            <a href="#main-content" className="skip-link">
+              Skip to main content
+            </a>
             <Navbar />
-            <main>{children}</main>
+            <main id="main-content">{children}</main>
             <Footer />
           </AuthProvider>
         </NextIntlClientProvider>

@@ -31,6 +31,7 @@ export function PhotoGallery({ photos, venueName }: PhotoGalleryProps) {
         src={photos[current]}
         alt={t('photo', { n: current + 1, total: photos.length })}
         fill
+        sizes="100vw"
         priority
         className="object-cover transition-opacity duration-500"
       />

@@ -5,6 +5,8 @@ import type { Venue } from '@/lib/types';
 
 interface VenueCardProps {
   venue: Venue;
+  /** Set true for the first card in a list to hint the browser to preload the image (LCP). */
+  priority?: boolean;
 }
 
 function formatPrice(venue: Venue): string {
@@ -18,7 +20,7 @@ function formatPrice(venue: Venue): string {
   return 'Price on request';
 }
 
-export function VenueCard({ venue }: VenueCardProps) {
+export function VenueCard({ venue, priority = false }: VenueCardProps) {
   const t = useTranslations('common');
   const tActions = useTranslations('actions');
 
@@ -28,6 +30,7 @@ export function VenueCard({ venue }: VenueCardProps) {
         imageSrc={venue.photos[0]}
         title={venue.name}
         subtitle={venue.location}
+        imagePriority={priority}
         footer={
           <div className="flex items-center justify-between">
             <span className="font-body text-xs text-muted">

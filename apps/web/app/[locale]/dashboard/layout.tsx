@@ -40,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex flex-col gap-8 md:flex-row">
           {/* Sidebar nav */}
           <aside className="w-full md:w-56 shrink-0">
-            <nav className="flex flex-row gap-1 md:flex-col">
+            <nav aria-label="Dashboard navigation" className="flex flex-row gap-1 md:flex-col">
               {NAV_ITEMS.map(({ href, key }) => (
                 <Link
                   key={href}

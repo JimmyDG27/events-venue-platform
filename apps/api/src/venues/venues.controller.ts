@@ -29,6 +29,33 @@ import {
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
+/**
+ * Validate file magic bytes to prevent MIME-type spoofing.
+ * A client can lie about Content-Type; the file signature cannot be faked
+ * without also making the file unreadable as the claimed format.
+ */
+function hasValidMagicBytes(buffer: Buffer, mimetype: string): boolean {
+  if (buffer.length < 12) return false;
+  if (mimetype === 'image/jpeg') {
+    return buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  }
+  if (mimetype === 'image/png') {
+    return (
+      buffer[0] === 0x89 && buffer[1] === 0x50 &&
+      buffer[2] === 0x4e && buffer[3] === 0x47
+    );
+  }
+  if (mimetype === 'image/webp') {
+    return (
+      buffer[0] === 0x52 && buffer[1] === 0x49 &&  // RI
+      buffer[2] === 0x46 && buffer[3] === 0x46 &&  // FF
+      buffer[8] === 0x57 && buffer[9] === 0x45 &&  // WE
+      buffer[10] === 0x42 && buffer[11] === 0x50   // BP
+    );
+  }
+  return false;
+}
+
 @ApiTags('venues')
 @Controller('venues')
 export class VenuesController {
@@ -85,6 +112,11 @@ export class VenuesController {
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       throw new BadRequestException(
         `File type not allowed. Accepted: ${ALLOWED_MIME_TYPES.join(', ')}`,
+      );
+    }
+    if (!hasValidMagicBytes(file.buffer, file.mimetype)) {
+      throw new BadRequestException(
+        'File content does not match the declared file type.',
       );
     }
 

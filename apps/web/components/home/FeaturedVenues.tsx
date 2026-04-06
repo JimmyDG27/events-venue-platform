@@ -39,8 +39,8 @@ export async function FeaturedVenues() {
         <p className="font-body text-sm text-muted">{t('noFeaturedVenues')}</p>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {venues.map((venue) => (
-            <VenueCard key={venue.id} venue={venue} />
+          {venues.map((venue, i) => (
+            <VenueCard key={venue.id} venue={venue} priority={i === 0} />
           ))}
         </div>
       )}
